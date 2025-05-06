@@ -1,0 +1,27 @@
+{
+  "name": "bbq_tracker",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thisara-jayamuni/bbq_tracker.git"
+  },
+  "author": "Thisara Jayamuni",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thisara-jayamuni/bbq_tracker/issues"
+  },
+  "homepage": "https://github.com/thisara-jayamuni/bbq_tracker#readme",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongoose": "^8.14.1"
+  }
+}
