@@ -1,20 +1,16 @@
-# Use the official Node.js image as the base image
-FROM node:16-slim
+FROM node:18
 
-# Set the working directory in the container
-WORKDIR /app
+# Create app directory
+WORKDIR /usr/src/app
 
-# Copy the package.json and package-lock.json files into the container
+# Install app dependencies
 COPY package*.json ./
+RUN npm install
 
-# Install the dependencies
-RUN npm install --production
-
-# Copy the rest of the application code into the container
+# Bundle app source
 COPY . .
 
-# Expose the port the app runs on
+# Expose port
 EXPOSE 5000
 
-# Set the command to run the application
-CMD ["node", "app.js"]
+CMD ["node", "server.js"]

@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: bbq-tracker-api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - MONGO_USER=s224714499
+      - MONGO_PASS=ekUtR954E1MOQTmf
+      - MONGO_CLUSTER=cluster0.eylxagt.mongodb.net
+      - MONGO_DB=bbqtracker
+      - ADMIN_API_KEY=devapikey123
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6.0
+    container_name: bbq-tracker-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
