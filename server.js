@@ -1,28 +1,32 @@
-const express = require('express');
-// const mongoose = require('mongoose');
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+
+// Load config based on environment
+const config = require("./config/config");
 
 const app = express();
-const port = process.env.port || 3000;
-
-app.use(express.static('public'));
-
-// Middlewares
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
-// mongoose.connect('', {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
+// Load routes
+const userRoutes = require("./routes/users.routes");
+// Add more as needed
+app.use("/api/users", userRoutes);
 
-// mongoose.connection.on('connected', () => {
-//   console.log('✅ Connected to MongoDB!');
-// });
+// Connect to MongoDB
+mongoose.connect(config.mongoUri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log("MongoDB connected"))
+.catch(err => console.error("MongoDB connection error:", err));
 
-// Routes
-const usersRoute = require('./routes/users.routes');
-app.use('/api/users', usersRoute);
+app.get("/", (req, res) => {
+  res.send("🔥 BBQ Tracker API is running");
+});
 
-app.listen(port, () => {
-  console.log('App listening to: ' + port);
+// Start server
+app.listen(config.port, () => {
+  console.log(`🚀 Server running on http://localhost:${config.port}`);
 });
