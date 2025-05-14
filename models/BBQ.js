@@ -1,16 +1,40 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const bbqSchema = new mongoose.Schema({
-  locationName: { type: String, required: true },
-  latitude: Number,
-  longitude: Number,
+const BBQSchema = new mongoose.Schema({
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point',
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      longitude: {
+        type: Number,
+        required: true,
+      },
+      latitude: {
+        type: Number,
+        required: true,
+      },
+      required: true,
+    },
+  },
   status: {
     type: String,
-    enum: ["clean", "dirty", "out_of_order"],
-    default: "clean"
+    enum: ['Working', 'Faulty', 'Cleaning Required', 'Offline'],
+    default: 'Working',
   },
-  lastCleaned: Date,
-  notes: String
+  lastCleaned: {
+    type: Date,
+    default: Date.now,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model("BBQ", bbqSchema);
+BBQSchema.index({ location: '2dsphere' });
+
+module.exports = mongoose.model('BBQ', BBQSchema);
