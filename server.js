@@ -15,7 +15,7 @@ const deviceRoutes = require("./routes/device.routes");
 const bbqRoutes = require("./routes/BBQ.routes");
 // Add more as needed
 app.use("/api/users", userRoutes);
-app.use("/api/devices", deviceRoutes);
+// app.use("/api/devices", deviceRoutes);
 app.use("/api/bbqs", bbqRoutes);
 
 // Connect to MongoDB
