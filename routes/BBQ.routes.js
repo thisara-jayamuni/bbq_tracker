@@ -4,7 +4,7 @@ const bbqController = require("../controllers/bbq.Controller");
 const auth = require("../middlewares/auth");
 
 router.get("/", bbqController.getAllBBQs);              // Public
-router.post("/",auth, bbqController.getAllBBQs);              // Protected
+router.post("/",auth, bbqController.createBBQ);              // Protected
 // router.get("/:id", bbqController.getBBQById);           // Optional
 // router.post("/", auth, bbqController.createBBQ);        // Protected
 // router.put("/:id", auth, bbqController.updateBBQ);      // Protected
