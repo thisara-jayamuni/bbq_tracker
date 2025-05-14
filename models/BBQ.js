@@ -9,6 +9,14 @@ const BBQSchema = new mongoose.Schema({
     },
     coordinates: {
       type: [Number], // [longitude, latitude]
+      longitude: {
+        type: Number,
+        required: true,
+      },
+      latitude: {
+        type: Number,
+        required: true,
+      },
       required: true,
     },
   },

@@ -1,9 +1,9 @@
-const BBQ = require("../models/BBQ"); // Make sure this path is correct based on your project
+const BBQ = require("../models/BBQ"); 
 
 const getAllBBQs = async (req, res) => {
   try {
-    const bbqs = await BBQ.find(); // Optional: use dummy response if model not ready
-    res.status(200).json(bbqs);    // Replace with: res.status(200).json({ message: 'All BBQs' }); if no model yet
+    const bbqs = await BBQ.find(); 
+    res.status(200).json(bbqs);   
   } catch (error) {
     res.status(500).json({ error });
   }
