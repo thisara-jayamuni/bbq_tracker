@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const bbqSchema = new mongoose.Schema({
   locationName: { type: String, required: true },
-  latitude: Number,
-  longitude: Number,
+  latitude: { type: Number, required: true },
+  longitude: { type: Number, required: true },
   status: {
     type: String,
     enum: ["clean", "dirty", "out_of_order"],
