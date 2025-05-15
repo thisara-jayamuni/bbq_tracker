@@ -1,11 +1,25 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const statusLogSchema = new mongoose.Schema({
-  bbqId: { type: mongoose.Schema.Types.ObjectId, ref: "BBQ", required: true },
-  oldStatus: String,
-  newStatus: String,
-  changedAt: { type: Date, default: Date.now },
-  source: { type: String, enum: ["cron", "manual", "iot"], default: "manual" }
+const StatusLogSchema = new mongoose.Schema({
+  bbq: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'BBQ',
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ['Working', 'Faulty', 'Cleaning Required', 'Offline'],
+    required: true,
+  },
+  updatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+  notes: String,
 });
 
-module.exports = mongoose.model("StatusLog", statusLogSchema);
+module.exports = mongoose.model('StatusLog', StatusLogSchema);
