@@ -13,10 +13,13 @@ app.use(express.json());
 const userRoutes = require("./routes/users.routes");
 const deviceRoutes = require("./routes/device.routes");
 const bbqRoutes = require("./routes/BBQ.routes");
-// Add more as needed
+const faultRoutes = require("./routes/faultReport.routes");
+
+
 app.use("/api/users", userRoutes);
 // app.use("/api/devices", deviceRoutes);
 app.use("/api/bbqs", bbqRoutes);
+app.use("/api/faults", faultRoutes);
 
 // Connect to MongoDB
 mongoose.connect(config.mongoUri, {

@@ -5,9 +5,8 @@ const auth = require("../middlewares/auth");
 
 router.get("/", bbqController.getAllBBQs);              // Public
 router.post("/",auth, bbqController.createBBQ);              // Protected
-// router.get("/:id", bbqController.getBBQById);           // Optional
-// router.post("/", auth, bbqController.createBBQ);        // Protected
-// router.put("/:id", auth, bbqController.updateBBQ);      // Protected
-// router.delete("/:id", auth, bbqController.deleteBBQ);   // Protected
+router.get("/:id", bbqController.getBBQById);           // Optional
+router.put("/:id", auth, bbqController.updateBBQ);      // Protected
+router.delete("/:id", auth, bbqController.deleteBBQ);   // Protected
 
 module.exports = router;

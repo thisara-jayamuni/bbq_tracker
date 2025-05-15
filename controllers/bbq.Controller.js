@@ -31,7 +31,40 @@ const createBBQ = async (req, res) => {
   }
 };
 
+const getBBQById = async (req, res) => {
+  try {
+    const bbq = await BBQ.findById(req.params.id);
+    if (!bbq) return res.status(404).json({ error: "BBQ not found" });
+    res.status(200).json(bbq);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const updateBBQ = async (req, res) => {
+  try {
+    const updated = await BBQ.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) return res.status(404).json({ error: "BBQ not found" });
+    res.status(200).json(updated);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const deleteBBQ = async (req, res) => {
+  try {
+    const deleted = await BBQ.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: "BBQ not found" });
+    res.status(200).json({ message: "BBQ deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllBBQs,
-  createBBQ
+  createBBQ,
+  getBBQById,
+  updateBBQ,
+  deleteBBQ
 };
