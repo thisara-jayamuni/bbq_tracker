@@ -1,0 +1,54 @@
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--light-bg); /* Light Blue background */
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 1400px;
+    width: 100%;
+}
+
+.nav-wrapper {
+    padding: 0 40px;
+}
+
+#map {
+    height: 80vh;
+    width: 100%;
+}
+
+.legend {
+    background: white;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(25, 118, 210, 0.2); /* Blue shadow */
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.legend-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+/* Theme colors */
+:root {
+    --primary-color: #1976D2; /* Material Blue */
+    --secondary-color: #64B5F6; /* Light Blue */
+    --accent-color: #2196F3; /* Blue */
+    --text-color: #0D47A1; /* Dark Blue */
+    --light-bg: #E3F2FD; /* Light Blue Background */
+} 
