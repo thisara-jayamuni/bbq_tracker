@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VIC BBQ Tracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+    <link href="/style.css" rel="stylesheet" />
+</head>
+
+<body class="blue lighten-5">
+    <!-- Include Header -->
+    <div id="header"></div>
+
+    <div class="row map-row">
+        <div class="col s12 m2 map-col">
+            <div class="legend">
+                <h6>Legend</h6>
+                <div class="legend-item">
+                    <img src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png" class="legend-icon">
+                    <span>Your Location</span>
+                </div>
+                <div class="legend-item">
+                    <img src="http://maps.google.com/mapfiles/ms/icons/green-dot.png" class="legend-icon">
+                    <span>Very Close (< 1km)</span>
+                </div>
+                <div class="legend-item">
+                    <img src="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png" class="legend-icon">
+                    <span>Nearby (1-2km)</span>
+                </div>
+                <div class="legend-item">
+                    <img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png" class="legend-icon">
+                    <span>Far (> 2km)</span>
+                </div>
+            </div>
+        </div>
+        <div class="col s12 m10 map-col">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Include Footer -->
+    <footer class="page-footer">
+        <div class="footer-copyright">
+            <div class="container">
+                © 2024 VIC BBQ Tracker
+                <a class="grey-text text-lighten-4 right" href="#!">About</a>
+            </div>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>
