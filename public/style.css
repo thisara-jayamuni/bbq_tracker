@@ -1,0 +1,473 @@
+/* Base styles */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--light-bg);
+}
+
+/* Theme colors */
+:root {
+    --primary-color: #1976D2; /* Material Blue */
+    --secondary-color: #64B5F6; /* Light Blue */
+    --accent-color: #2196F3; /* Blue */
+    --text-color: #0D47A1; /* Dark Blue */
+    --light-bg: #E3F2FD; /* Light Blue Background */
+    --legend-text: #5C4033; /* Legend text color */
+    --text-secondary: #666; /* Secondary text color */
+    --text-tertiary: #999; /* Tertiary text color */
+    --border-color: #eee; /* Border color */
+}
+
+/* Layout */
+.main-content {
+    flex: 1;
+    position: relative;
+    height: calc(100vh - 128px); /* Subtract header and footer height */
+    margin-top: 64px; /* Add header height */
+    width: 100%;
+}
+
+/* Navigation */
+.nav-wrapper {
+    padding: 0 20px;
+    background-color: var(--primary-color) !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 100%;
+}
+
+.brand-logo {
+    color: var(--light-bg) !important;
+}
+
+/* Buttons */
+.btn {
+    background-color: var(--accent-color) !important;
+}
+
+.btn:hover {
+    background-color: #1565C0 !important;
+}
+
+/* Map Layout */
+.map-container {
+    margin: 0;
+    padding: 0;
+    width: 110%;
+    height: calc(100vh - 100px);
+}
+
+.map-row {
+    margin: 0;
+    padding: 0;
+    width: 110%;
+    height: 100%;
+}
+
+.map-col {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+
+.map-col:first-child {
+    width: 350px;
+    max-width: 350px;
+    flex: 0 0 350px;
+}
+
+.map-col:last-child {
+    width: calc(100% - 350px);
+    max-width: calc(100% - 350px);
+    flex: 1;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+/* Map Markers */
+.map-marker {
+    width: 32px !important;
+    height: 32px !important;
+    margin-left: -16px !important;
+    margin-top: -32px !important;
+}
+
+.map-marker-user {
+    width: 40px !important;
+    height: 40px !important;
+    margin-left: -20px !important;
+    margin-top: -40px !important;
+}
+
+/* Legend */
+.legend {
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 5px rgba(25, 118, 210, 0.2);
+    font-size: 1em;
+    z-index: 100;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.legend h6 {
+    color: var(--legend-text);
+    font-size: 1.2em;
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
+    padding: 6px 0;
+}
+
+.legend-item span {
+    color: var(--legend-text);
+    font-size: 1em;
+}
+
+.legend-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+}
+
+/* BBQ Details */
+.bbq-details {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.bbq-details h6 {
+    color: var(--legend-text);
+    font-size: 1.2em;
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.bbq-info {
+    padding: 10px;
+    background: var(--light-bg);
+    border-radius: 8px;
+}
+
+.bbq-name {
+    color: var(--primary-color);
+    font-size: 1.1em;
+    margin: 0 0 10px 0;
+    font-weight: 500;
+}
+
+.bbq-distance {
+    color: var(--text-secondary);
+    margin: 0 0 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.bbq-distance i {
+    font-size: 16px;
+}
+
+.bbq-status {
+    margin: 15px 0;
+}
+
+.bbq-status p {
+    margin: 8px 0;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.bbq-status i {
+    font-size: 16px;
+    color: var(--primary-color);
+}
+
+.bbq-status span {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.bbq-facilities {
+    margin-top: 15px;
+}
+
+.bbq-facilities p {
+    margin: 0 0 10px 0;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.bbq-facilities i {
+    font-size: 16px;
+    color: var(--primary-color);
+}
+
+.facility-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.facility-tag {
+    background: #E3F2FD;
+    color: var(--primary-color);
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.9em;
+}
+
+/* Login Page */
+.login-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(25, 118, 210, 0.2);
+}
+
+.login-title {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.btn-login {
+    background-color: var(--accent-color) !important;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.btn-login:hover {
+    background-color: #1565C0 !important;
+}
+
+.input-field input:focus+label {
+    color: var(--primary-color) !important;
+}
+
+.input-field input:focus {
+    border-bottom: 1px solid var(--primary-color) !important;
+    box-shadow: 0 1px 0 0 var(--primary-color) !important;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.register-link a {
+    color: var(--accent-color);
+}
+
+.register-link a:hover {
+    color: #1565C0;
+}
+
+/* Footer */
+.page-footer {
+    background-color: var(--primary-color) !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0 !important;
+    width: 100%;
+}
+
+.footer-copyright {
+    background-color: #1565C0 !important;
+    padding: 10px 0 !important;
+}
+
+/* Dashboard */
+.dashboard-container {
+    padding: 20px;
+}
+
+.user-profile {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(25, 118, 210, 0.2);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+.profile-avatar i {
+    font-size: 40px;
+    color: white;
+}
+
+.profile-info h4 {
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.profile-info p {
+    color: var(--text-secondary);
+    margin: 5px 0 0 0;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(25, 118, 210, 0.2);
+}
+
+.dashboard-card h5 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.dashboard-card h5 i {
+    margin-right: 10px;
+}
+
+.saved-location {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.saved-location:last-child {
+    border-bottom: none;
+}
+
+.location-icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--light-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.location-icon i {
+    color: var(--primary-color);
+}
+
+.location-info h6 {
+    margin: 0;
+    color: var(--text-color);
+}
+
+.location-info p {
+    margin: 5px 0 0 0;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.activity-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.activity-item .time {
+    font-size: 0.8em;
+    color: var(--text-tertiary);
+}
+
+.btn-edit {
+    background-color: var(--accent-color) !important;
+}
+
+.btn-edit:hover {
+    background-color: #1565C0 !important;
+}
+
+/* Responsive adjustments */
+@media only screen and (max-width: 992px) {
+    .main-content {
+        height: calc(100vh - 120px); /* Mobile header and footer height */
+        margin-top: 56px;
+        width: 100%;
+    }
+
+    .map-col:first-child {
+        width: 100%;
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+
+    .map-col:last-child {
+        width: 100%;
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+
+    .legend {
+        position: relative !important;
+        height: auto !important;
+        margin: 8px !important;
+        border-radius: 4px !important;
+    }
+
+    .page-footer {
+        position: relative;
+        width: 100%;
+    }
+} 
