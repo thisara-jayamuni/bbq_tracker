@@ -1,0 +1,121 @@
+/* Navigation */
+.nav-wrapper {
+    background-color: var(--primary-color) !important;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.brand-logo {
+    color: var(--light-bg) !important;
+    font-size: 1.5rem !important;
+    font-weight: 500;
+}
+
+.nav-wrapper ul li a {
+    color: var(--light-bg) !important;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 1rem;
+    padding: 0 15px;
+}
+
+.nav-wrapper ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidenav {
+    background-color: white;
+}
+
+.sidenav li a {
+    color: var(--primary-color) !important;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 32px;
+}
+
+.sidenav li a:hover {
+    background-color: var(--light-bg) !important;
+}
+
+.sidenav-trigger {
+    color: var(--light-bg) !important;
+}
+
+/* Footer */
+.page-footer {
+    background-color: var(--primary-color) !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0 !important;
+}
+
+.footer-copyright {
+    background-color: #1565C0 !important;
+    padding: 10px 0 !important;
+}
+
+/* Buttons */
+.btn {
+    background-color: var(--accent-color) !important;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn:hover {
+    background-color: #1565C0 !important;
+}
+
+.btn i {
+    margin-right: 4px;
+}
+
+/* Cards */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* Forms */
+.input-field input:focus + label {
+    color: var(--primary-color) !important;
+}
+
+.input-field input:focus {
+    border-bottom: 1px solid var(--primary-color) !important;
+    box-shadow: 0 1px 0 0 var(--primary-color) !important;
+}
+
+/* Modals */
+.modal {
+    border-radius: 8px;
+}
+
+.modal-content {
+    padding: 24px;
+}
+
+.modal-content h5 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+/* Toasts */
+.toast {
+    border-radius: 4px;
+} 
