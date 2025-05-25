@@ -80,6 +80,10 @@ function updateNavigation() {
   const logoutBtn = document.getElementById('logout-nav-item');
   const mobileLoginBtn = document.getElementById('mobile-login-item');
   const mobileLogoutBtn = document.getElementById('mobile-logout-item');
+  const dashboardBtn = document.getElementById('dashboard-nav-item');
+  const dashboardLink = document.getElementById('dashboard-link');
+  const mobileDashboardBtn = document.getElementById('mobile-dashboard-item');
+  const mobileDashboardLink = document.getElementById('mobile-dashboard-link');
 
   if (
     userInfoNav &&
@@ -89,7 +93,11 @@ function updateNavigation() {
     loginBtn &&
     logoutBtn &&
     mobileLoginBtn &&
-    mobileLogoutBtn
+    mobileLogoutBtn &&
+    dashboardBtn &&
+    dashboardLink &&
+    mobileDashboardBtn &&
+    mobileDashboardLink
   ) {
     if (isLoggedIn && userData) {
       // Update user information
@@ -104,11 +112,18 @@ function updateNavigation() {
         mobileRoleBadge.textContent = userData.role || 'User';
       }
 
+      // Set dashboard URL based on role
+      const dashboardUrl = getDashboardUrl(userData.role);
+      dashboardLink.href = dashboardUrl;
+      mobileDashboardLink.href = dashboardUrl;
+
       // Show user info and navigation items
       userInfoNav.style.display = 'block';
       mobileUserInfo.style.display = 'block';
       loginBtn.style.display = 'none';
       logoutBtn.style.display = 'block';
+      dashboardBtn.style.display = 'block';
+      mobileDashboardBtn.style.display = 'block';
       mobileLoginBtn.style.display = 'none';
       mobileLogoutBtn.style.display = 'block';
     } else {
@@ -117,9 +132,27 @@ function updateNavigation() {
       mobileUserInfo.style.display = 'none';
       loginBtn.style.display = 'block';
       logoutBtn.style.display = 'none';
+      dashboardBtn.style.display = 'none';
+      mobileDashboardBtn.style.display = 'none';
       mobileLoginBtn.style.display = 'block';
       mobileLogoutBtn.style.display = 'none';
     }
+  }
+}
+
+// Function to get dashboard URL based on user role
+function getDashboardUrl(role) {
+  switch (role.toLowerCase()) {
+    case 'admin':
+      return '/admin/dashboard.html';
+    case 'supervisor':
+      return '/supervisor/dashboard.html';
+    case 'council':
+      return '/council/dashboard.html';
+    case 'cleaner':
+      return '/cleaner/dashboard.html';
+    default:
+      return '/';
   }
 }
 

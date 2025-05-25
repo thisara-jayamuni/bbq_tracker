@@ -19,10 +19,17 @@
             <ul class="right hide-on-med-and-down">
                 <li id="user-info-nav-item" style="display: none;">
                     <span class="white-text" style="margin-right: 20px; display: flex; align-items: center;">
-                        <i class="material-icons" style="margin-right: 8px;">account_circle</i>
+
                         <span id="user-name" style="margin-right: 10px;">Admin User</span>
-                        <span class="badge blue white-text" style="font-size: 12px; padding: 0 8px;">Admin</span>
+                        <span class="badge blue white-text"
+                            style="font-size: 12px; padding: 5px 15px 28px 15px; border-radius: 15px;">Admin</span>
                     </span>
+                </li>
+                <li id="dashboard-nav-item" style="display: none;">
+                    <a href="#" id="dashboard-link" class="waves-effect waves-light btn blue"
+                        style="margin-right: 10px;">
+                        <i class="material-icons left">dashboard</i>Dashboard
+                    </a>
                 </li>
                 <li id="logout-nav-item" style="display: none;">
                     <a href="#!" onclick="handleLogout()" class="waves-effect waves-light btn red"
@@ -56,6 +63,11 @@
             </div>
         </li>
         <li><a href="/" class="waves-effect"><i class="material-icons">home</i>Home</a></li>
+        <li id="mobile-dashboard-item" style="display: none;">
+            <a href="#" id="mobile-dashboard-link" class="waves-effect">
+                <i class="material-icons">dashboard</i>Dashboard
+            </a>
+        </li>
         <li id="mobile-logout-item" style="display: none;">
             <a href="#!" onclick="handleLogout()" class="waves-effect red-text">
                 <i class="material-icons">exit_to_app</i>Logout
