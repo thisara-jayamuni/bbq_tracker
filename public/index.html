@@ -10,9 +10,19 @@
     <link href="/css/variables.css" rel="stylesheet" />
     <link href="/css/components.css" rel="stylesheet" />
     <link href="/style.css" rel="stylesheet" />
+    <!-- Load configuration first -->
+    <script src="/js/config.js"></script>
     <!-- Load Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLghEg1geQbF5jeico1vTQ-Y25a6WXEmY&callback=initMap"
-        async defer></script>
+    <script>
+        function loadGoogleMapsAPI() {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${config.GOOGLE_MAPS_API_KEY}&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+        loadGoogleMapsAPI();
+    </script>
 </head>
 
 <body class="blue lighten-5">
