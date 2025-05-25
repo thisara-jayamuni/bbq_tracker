@@ -20,7 +20,7 @@ const faultRoutes = require("./routes/faultReport.routes");
 
 
 app.use("/api/users", userRoutes);
-// app.use("/api/devices", deviceRoutes);
+// app.use("/api/devices", deviceRoutes); todo: fix device routes
 app.use("/api/bbqs", bbqRoutes);
 app.use("/api/faults", faultRoutes);
 
