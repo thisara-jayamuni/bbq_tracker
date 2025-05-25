@@ -38,17 +38,82 @@ body {
 
 /* Navigation */
 .nav-wrapper {
-    padding: 0 20px;
     background-color: var(--primary-color) !important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
+    padding: 0;
+    height: 64px;
+    line-height: 64px;
     width: 100%;
 }
 
+.nav-wrapper .container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 30px;
+}
+
 .brand-logo {
+    color: var(--light-bg) !important;
+    font-size: 1.5rem !important;
+    font-weight: 500;
+    line-height: 64px;
+    margin-left: 30px;
+}
+
+.nav-wrapper ul {
+    margin: 0;
+    height: 64px;
+    line-height: 64px;
+}
+
+.nav-wrapper ul li {
+    height: 64px;
+    line-height: 64px;
+}
+
+.nav-wrapper ul li a {
+    color: var(--light-bg) !important;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 1rem;
+    padding: 0 15px;
+    height: 64px;
+    line-height: 64px;
+}
+
+.nav-wrapper ul li a.btn {
+    margin: 14px 0;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 16px;
+    margin-right: 30px;
+}
+
+.nav-wrapper ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-wrapper ul li a.btn:hover {
+    background-color: #1565C0 !important;
+}
+
+.sidenav {
+    background-color: white;
+}
+
+.sidenav li a {
+    color: var(--primary-color) !important;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 32px;
+}
+
+.sidenav li a:hover {
+    background-color: var(--light-bg) !important;
+}
+
+.sidenav-trigger {
     color: var(--light-bg) !important;
 }
 
@@ -70,28 +135,29 @@ body {
 }
 
 .map-row {
-    margin: 0;
-    padding: 0;
-    width: 110%;
-    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: calc(100vh - 64px); /* Subtract header height */
+    margin-top: 64px !important; /* Add header height */
 }
 
 .map-col {
-    padding: 0;
-    margin: 0;
+    padding: 0 !important;
+    margin: 0 !important;
     height: 100%;
 }
 
 .map-col:first-child {
-    width: 350px;
-    max-width: 350px;
-    flex: 0 0 350px;
+    width: 16.666667% !important;
+    max-width: 16.666667% !important;
+    flex: 0 0 16.666667% !important;
 }
 
 .map-col:last-child {
-    width: calc(100% - 350px);
-    max-width: calc(100% - 350px);
-    flex: 1;
+    width: 83.333333% !important;
+    max-width: 83.333333% !important;
+    flex: 0 0 83.333333% !important;
 }
 
 #map {
@@ -118,38 +184,42 @@ body {
 /* Legend */
 .legend {
     background: white;
-    padding: 20px;
+    padding: 15px;
     box-shadow: 0 0 5px rgba(25, 118, 210, 0.2);
-    font-size: 1em;
+    font-size: 0.9em;
     z-index: 100;
     height: 100%;
     overflow-y: auto;
+    margin: 0;
+    border-right: none;
+    position: relative;
+    top: 0;
 }
 
 .legend h6 {
     color: var(--legend-text);
-    font-size: 1.2em;
-    margin: 0 0 15px 0;
-    padding-bottom: 10px;
+    font-size: 1.1em;
+    margin: 0 0 10px 0;
+    padding-bottom: 8px;
     border-bottom: 1px solid var(--border-color);
 }
 
 .legend-item {
     display: flex;
     align-items: center;
-    margin: 12px 0;
-    padding: 6px 0;
+    margin: 8px 0;
+    padding: 4px 0;
 }
 
 .legend-item span {
     color: var(--legend-text);
-    font-size: 1em;
+    font-size: 0.9em;
 }
 
 .legend-icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 15px;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
 }
 
 /* BBQ Details */
@@ -305,9 +375,16 @@ body {
     width: 100%;
 }
 
+.page-footer .container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 30px;
+}
+
 .footer-copyright {
     background-color: #1565C0 !important;
-    padding: 10px 0 !important;
+    padding: 10px 30px !important;
+    width: 100%;
 }
 
 /* Dashboard */
@@ -447,27 +524,44 @@ body {
         width: 100%;
     }
 
+    .map-row {
+        height: calc(100vh - 56px); /* Smaller header on mobile */
+        margin-top: 56px !important;
+    }
+    
     .map-col:first-child {
-        width: 100%;
-        max-width: 100%;
-        flex: 0 0 100%;
-    }
-
-    .map-col:last-child {
-        width: 100%;
-        max-width: 100%;
-        flex: 0 0 100%;
-    }
-
-    .legend {
-        position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
         height: auto !important;
-        margin: 8px !important;
-        border-radius: 4px !important;
+    }
+    
+    .map-col:last-child {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+        height: calc(100vh - 56px - 120px) !important; /* Subtract header and legend height */
+    }
+    
+    .legend {
+        height: 120px;
+        overflow-y: auto;
     }
 
-    .page-footer {
-        position: relative;
-        width: 100%;
+    .nav-wrapper .container,
+    .page-footer .container {
+        padding: 0 15px;
+    }
+
+    .brand-logo {
+        margin-left: 15px;
+    }
+
+    .nav-wrapper ul li a.btn {
+        margin-right: 15px;
+    }
+
+    .footer-copyright {
+        padding: 10px 15px !important;
     }
 } 

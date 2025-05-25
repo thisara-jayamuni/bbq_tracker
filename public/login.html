@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - VIC BBQ Tracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+    <link href="/style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <!-- Include Header -->
+    <div id="header"></div>
+
+    <div class="main-content">
+        <div class="login-container">
+            <h4 class="login-title">Login to VIC BBQ Tracker</h4>
+            <div class="sample-credentials"
+                style="background: #E3F2FD; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                <p style="margin: 0; color: #1976D2; font-size: 14px;">
+                    <strong>Sample Login:</strong><br>
+                    Email: demo@bbqtracker.com<br>
+                    Password: Demo@123
+                </p>
+            </div>
+            <form id="loginForm">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="email" type="email" class="validate" required>
+                        <label for="email">Email</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="password" type="password" class="validate" required>
+                        <label for="password">Password</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <button class="btn waves-effect waves-light btn-login" type="submit" name="action">
+                        Login
+                    </button>
+                </div>
+                <div class="register-link">
+                    <p>Don't have an account? <a href="register.html">Register here</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Include Footer -->
+    <div id="footer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        // Load header and footer
+        fetch('components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header').innerHTML = data;
+            });
+
+        fetch('components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer').innerHTML = data;
+            });
+
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Sample credentials validation
+            if (email === 'demo@bbqtracker.com' && password === 'Demo@123') {
+                // Store login state
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+
+                // Show success message
+                M.toast({ html: 'Login successful! Redirecting...', classes: 'green' });
+
+                // Redirect to dashboard after a short delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } else {
+                // Show error message
+                M.toast({ html: 'Invalid email or password', classes: 'red' });
+            }
+        });
+
+        // Check if user is already logged in
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+
+</html>
