@@ -1,19 +1,141 @@
-// Load header
-fetch('components/header.html')
-  .then((response) => response.text())
-  .then((data) => {
-    document.getElementById('header').innerHTML = data;
-    // Initialize sidenav after header is loaded
-    var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems);
-  });
+// Load header and footer when DOM is ready
+document.addEventListener('DOMContentLoaded', function () {
+  // Check localStorage and update navigation
+  try {
+    const storedUser = localStorage.getItem('isLoggedIn');
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+  } catch (error) {
+    console.error('Error accessing localStorage:', error);
+  }
 
-// Load footer
-fetch('components/footer.html')
-  .then((response) => response.text())
-  .then((data) => {
-    document.getElementById('footer').innerHTML = data;
-  });
+  // Load header
+  fetch('/components/header.html')
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then((data) => {
+      // Try both standard and placeholder IDs
+      const headerElement =
+        document.getElementById('header') ||
+        document.getElementById('header-placeholder');
+      if (!headerElement) {
+        throw new Error('Header element not found in DOM');
+      }
+      headerElement.innerHTML = data;
+
+      // Wait for the DOM to update with the new content
+      setTimeout(() => {
+        try {
+          const elems = document.querySelectorAll('.sidenav');
+          if (elems.length > 0) {
+            M.Sidenav.init(elems);
+            updateNavigation();
+          }
+        } catch (error) {
+          console.error('Error initializing sidenav:', error);
+        }
+      }, 100);
+    })
+    .catch((error) => {
+      console.error('Error loading header:', error);
+    });
+
+  // Load footer
+  fetch('/components/footer.html')
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then((data) => {
+      // Try both standard and placeholder IDs
+      const footerElement =
+        document.getElementById('footer') ||
+        document.getElementById('footer-placeholder');
+      if (!footerElement) {
+        throw new Error('Footer element not found in DOM');
+      }
+      footerElement.innerHTML = data;
+    })
+    .catch((error) => {
+      console.error('Error loading footer:', error);
+    });
+});
+
+// Function to update navigation visibility
+function updateNavigation() {
+  const rawIsLoggedIn = localStorage.getItem('isLoggedIn');
+  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+  const isLoggedIn = rawIsLoggedIn === 'true';
+
+  const userInfoNav = document.getElementById('user-info-nav-item');
+  const userName = document.getElementById('user-name');
+  const mobileUserInfo = document.getElementById('mobile-user-info');
+  const mobileUserName = document.getElementById('mobile-user-name');
+  const loginBtn = document.getElementById('login-nav-item');
+  const logoutBtn = document.getElementById('logout-nav-item');
+  const mobileLoginBtn = document.getElementById('mobile-login-item');
+  const mobileLogoutBtn = document.getElementById('mobile-logout-item');
+
+  if (
+    userInfoNav &&
+    userName &&
+    mobileUserInfo &&
+    mobileUserName &&
+    loginBtn &&
+    logoutBtn &&
+    mobileLoginBtn &&
+    mobileLogoutBtn
+  ) {
+    if (isLoggedIn && userData) {
+      // Update user information
+      userName.textContent = userData.name || 'User';
+      mobileUserName.textContent = userData.name || 'User';
+
+      // Update role badge
+      const roleBadge = userInfoNav.querySelector('.badge');
+      const mobileRoleBadge = mobileUserInfo.querySelector('.badge');
+      if (roleBadge && mobileRoleBadge) {
+        roleBadge.textContent = userData.role || 'User';
+        mobileRoleBadge.textContent = userData.role || 'User';
+      }
+
+      // Show user info and navigation items
+      userInfoNav.style.display = 'block';
+      mobileUserInfo.style.display = 'block';
+      loginBtn.style.display = 'none';
+      logoutBtn.style.display = 'block';
+      mobileLoginBtn.style.display = 'none';
+      mobileLogoutBtn.style.display = 'block';
+    } else {
+      // Hide user info and navigation items
+      userInfoNav.style.display = 'none';
+      mobileUserInfo.style.display = 'none';
+      loginBtn.style.display = 'block';
+      logoutBtn.style.display = 'none';
+      mobileLoginBtn.style.display = 'block';
+      mobileLogoutBtn.style.display = 'none';
+    }
+  }
+}
+
+// Listen for changes in localStorage
+window.addEventListener('storage', function (e) {
+  if (e.key === 'isLoggedIn') {
+    updateNavigation();
+  }
+});
+
+function handleLogout() {
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('userData');
+  updateNavigation();
+  window.location.href = '/';
+}
 
 // Function to handle fault reporting
 function reportFault(locationName) {
@@ -78,9 +200,6 @@ function submitFault(locationName) {
   }
 
   // TODO: Send fault report to backend
-  console.log('Fault reported for:', locationName);
-  console.log('Description:', description);
-
   M.toast({ html: 'Fault report submitted successfully', classes: 'green' });
   closeFaultModal();
 }
