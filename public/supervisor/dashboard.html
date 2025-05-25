@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor Dashboard - VIC BBQ Tracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/css/variables.css" rel="stylesheet">
+    <link href="/css/components.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header will be loaded here -->
+    <div id="header-placeholder"></div>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <h4>Supervisor Dashboard</h4>
+                </div>
+            </div>
+
+            <!-- Task Management Section -->
+            <div class="row">
+                <div class="col s12 m6">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">Task Management</span>
+                            <div class="collection">
+                                <a href="#!" class="collection-item">Assign Cleaning Tasks</a>
+                                <a href="#!" class="collection-item">View Task Status</a>
+                                <a href="#!" class="collection-item">Schedule Maintenance</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Management Section -->
+                <div class="col s12 m6">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">Team Management</span>
+                            <div class="collection">
+                                <a href="#!" class="collection-item">View Cleaners</a>
+                                <a href="#!" class="collection-item">Performance Reports</a>
+                                <a href="#!" class="collection-item">Schedule Management</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Tasks Section -->
+            <div class="row">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">Active Tasks</span>
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th>Task ID</th>
+                                        <th>Location</th>
+                                        <th>Assigned To</th>
+                                        <th>Due Date</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#1234</td>
+                                        <td>Albert Park</td>
+                                        <td>John Smith</td>
+                                        <td>2024-03-21</td>
+                                        <td>In Progress</td>
+                                        <td><a href="#!" class="btn-small">Update</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>#1235</td>
+                                        <td>Fitzroy Gardens</td>
+                                        <td>Sarah Johnson</td>
+                                        <td>2024-03-22</td>
+                                        <td>Pending</td>
+                                        <td><a href="#!" class="btn-small">Assign</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded here -->
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        // Load header and footer
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                // Initialize sidenav after header is loaded
+                var elems = document.querySelectorAll('.sidenav');
+                var instances = M.Sidenav.init(elems);
+            });
+
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+</body>
+
+</html>

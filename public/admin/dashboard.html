@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - VIC BBQ Tracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/css/variables.css" rel="stylesheet">
+    <link href="/css/components.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header will be loaded here -->
+    <div id="header-placeholder"></div>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <h4>Admin Dashboard</h4>
+                </div>
+            </div>
+
+            <!-- Users Table Section -->
+            <div class="row">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-title-container">
+                                <span class="card-title">Users</span>
+                                <a class="btn-floating btn-small waves-effect waves-light"
+                                    onclick="openCreateUserModal()">
+                                    <i class="material-icons">add</i>
+                                </a>
+                            </div>
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>John Smith</td>
+                                        <td>john.smith@council.vic.gov.au</td>
+                                        <td>Council</td>
+                                        <td><span class="status-badge active">Active</span></td>
+                                        <td>
+                                            <a href="#!" class="btn-small" onclick="openUpdateUserModal(1)">
+                                                <i class="material-icons">edit</i>
+                                            </a>
+                                            <a href="#!" class="btn-small red" onclick="deleteUser(1)">
+                                                <i class="material-icons">delete</i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Sarah Johnson</td>
+                                        <td>sarah.j@council.vic.gov.au</td>
+                                        <td>Supervisor</td>
+                                        <td><span class="status-badge active">Active</span></td>
+                                        <td>
+                                            <a href="#!" class="btn-small" onclick="openUpdateUserModal(2)">
+                                                <i class="material-icons">edit</i>
+                                            </a>
+                                            <a href="#!" class="btn-small red" onclick="deleteUser(2)">
+                                                <i class="material-icons">delete</i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Create User Modal -->
+    <div id="createUserModal" class="modal">
+        <div class="modal-content">
+            <h4>Create New User</h4>
+            <form id="createUserForm">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="createName" type="text" required>
+                        <label for="createName">Full Name</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="createEmail" type="email" required>
+                        <label for="createEmail">Email</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <select id="createRole" required>
+                            <option value="" disabled selected>Choose role</option>
+                            <option value="council">Council</option>
+                            <option value="supervisor">Supervisor</option>
+                            <option value="cleaner">Cleaner</option>
+                        </select>
+                        <label>Role</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="createPassword" type="password" required>
+                        <label for="createPassword">Password</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
+            <a href="#!" class="waves-effect waves-green btn" onclick="createUser()">Create</a>
+        </div>
+    </div>
+
+    <!-- Update User Modal -->
+    <div id="updateUserModal" class="modal">
+        <div class="modal-content">
+            <h4>Update User</h4>
+            <form id="updateUserForm">
+                <input type="hidden" id="updateUserId">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="updateName" type="text" required>
+                        <label for="updateName">Full Name</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="updateEmail" type="email" required>
+                        <label for="updateEmail">Email</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <select id="updateRole" required>
+                            <option value="" disabled>Choose role</option>
+                            <option value="council">Council</option>
+                            <option value="supervisor">Supervisor</option>
+                            <option value="cleaner">Cleaner</option>
+                        </select>
+                        <label>Role</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <select id="updateStatus" required>
+                            <option value="" disabled>Choose status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        <label>Status</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
+            <a href="#!" class="waves-effect waves-green btn" onclick="updateUser()">Update</a>
+        </div>
+    </div>
+
+    <!-- Footer will be loaded here -->
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        // Load header and footer
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                // Initialize sidenav after header is loaded
+                var elems = document.querySelectorAll('.sidenav');
+                var instances = M.Sidenav.init(elems);
+            });
+
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+
+        // Initialize modals
+        document.addEventListener('DOMContentLoaded', function () {
+            var modals = document.querySelectorAll('.modal');
+            M.Modal.init(modals);
+
+            var selects = document.querySelectorAll('select');
+            M.FormSelect.init(selects);
+        });
+
+        // User management functions
+        function openCreateUserModal() {
+            var modal = M.Modal.getInstance(document.getElementById('createUserModal'));
+            modal.open();
+        }
+
+        function openUpdateUserModal(userId) {
+            // In a real application, you would fetch user data here
+            document.getElementById('updateUserId').value = userId;
+            var modal = M.Modal.getInstance(document.getElementById('updateUserModal'));
+            modal.open();
+        }
+
+        function createUser() {
+            // Get form data
+            const formData = {
+                name: document.getElementById('createName').value,
+                email: document.getElementById('createEmail').value,
+                role: document.getElementById('createRole').value,
+                password: document.getElementById('createPassword').value
+            };
+
+            // In a real application, you would send this data to your backend
+            console.log('Creating user:', formData);
+
+            // Close modal and reset form
+            var modal = M.Modal.getInstance(document.getElementById('createUserModal'));
+            modal.close();
+            document.getElementById('createUserForm').reset();
+        }
+
+        function updateUser() {
+            // Get form data
+            const formData = {
+                id: document.getElementById('updateUserId').value,
+                name: document.getElementById('updateName').value,
+                email: document.getElementById('updateEmail').value,
+                role: document.getElementById('updateRole').value,
+                status: document.getElementById('updateStatus').value
+            };
+
+            // In a real application, you would send this data to your backend
+            console.log('Updating user:', formData);
+
+            // Close modal and reset form
+            var modal = M.Modal.getInstance(document.getElementById('updateUserModal'));
+            modal.close();
+            document.getElementById('updateUserForm').reset();
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                // In a real application, you would send a delete request to your backend
+                console.log('Deleting user:', userId);
+            }
+        }
+    </script>
+
+    <style>
+        .card-title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            color: white;
+        }
+
+        .status-badge.active {
+            background-color: #4CAF50;
+        }
+
+        .status-badge.inactive {
+            background-color: #F44336;
+        }
+
+        .btn-small {
+            margin: 0 4px;
+        }
+
+        .modal {
+            max-width: 500px;
+        }
+    </style>
+</body>
+
+</html>

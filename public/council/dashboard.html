@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Council Dashboard - VIC BBQ Tracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/css/variables.css" rel="stylesheet">
+    <link href="/css/components.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header will be loaded here -->
+    <div id="header-placeholder"></div>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <h4>Council Dashboard</h4>
+                </div>
+            </div>
+
+            <!-- BBQ Locations Management Section -->
+            <div class="row">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="row" style="margin-bottom: 0;">
+                                <div class="col s6">
+                                    <span class="card-title">BBQ Locations Management</span>
+                                </div>
+                                <div class="col s6" style="text-align: right;">
+                                    <a href="#createBBQModal"
+                                        class="btn-floating btn-small waves-effect waves-light modal-trigger">
+                                        <i class="material-icons">add</i>
+                                    </a>
+                                </div>
+                            </div>
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th>Location ID</th>
+                                        <th>Location Name</th>
+                                        <th>Address</th>
+                                        <th>Assigned Supervisor</th>
+                                        <th>Status</th>
+                                        <th>Last Maintenance</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#BBQ001</td>
+                                        <td>Albert Park</td>
+                                        <td>123 Albert Park Rd</td>
+                                        <td>John Smith</td>
+                                        <td>Operational</td>
+                                        <td>2024-03-15</td>
+                                        <td>
+                                            <a href="#editBBQModal" class="btn-small modal-trigger">Edit</a>
+                                            <a href="#!" class="btn-small">Assign Supervisor</a>
+                                            <a href="#!" class="btn-small">View Details</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>#BBQ002</td>
+                                        <td>Fitzroy Gardens</td>
+                                        <td>456 Fitzroy St</td>
+                                        <td>Sarah Johnson</td>
+                                        <td>Maintenance Required</td>
+                                        <td>2024-03-10</td>
+                                        <td>
+                                            <a href="#editBBQModal" class="btn-small modal-trigger">Edit</a>
+                                            <a href="#!" class="btn-small">Assign Supervisor</a>
+                                            <a href="#!" class="btn-small">View Details</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create BBQ Location Modal -->
+            <div id="createBBQModal" class="modal">
+                <div class="modal-content">
+                    <h4>Add New BBQ Location</h4>
+                    <form id="createBBQForm">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="locationName" type="text" required>
+                                <label for="locationName">Location Name</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="address" type="text" required>
+                                <label for="address">Address</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <select id="supervisor" required>
+                                    <option value="" disabled selected>Choose a supervisor</option>
+                                    <option value="1">John Smith</option>
+                                    <option value="2">Sarah Johnson</option>
+                                    <option value="3">Mike Brown</option>
+                                </select>
+                                <label>Assigned Supervisor</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <select id="status" required>
+                                    <option value="" disabled selected>Choose status</option>
+                                    <option value="operational">Operational</option>
+                                    <option value="maintenance">Maintenance Required</option>
+                                    <option value="out_of_order">Out of Order</option>
+                                </select>
+                                <label>Status</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
+                    <a href="#!" class="waves-effect waves-green btn-flat" onclick="submitCreateBBQ()">Create</a>
+                </div>
+            </div>
+
+            <!-- Edit BBQ Location Modal -->
+            <div id="editBBQModal" class="modal">
+                <div class="modal-content">
+                    <h4>Edit BBQ Location</h4>
+                    <form id="editBBQForm">
+                        <input type="hidden" id="editLocationId">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="editLocationName" type="text" required>
+                                <label for="editLocationName">Location Name</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="editAddress" type="text" required>
+                                <label for="editAddress">Address</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <select id="editSupervisor" required>
+                                    <option value="" disabled>Choose a supervisor</option>
+                                    <option value="1">John Smith</option>
+                                    <option value="2">Sarah Johnson</option>
+                                    <option value="3">Mike Brown</option>
+                                </select>
+                                <label>Assigned Supervisor</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <select id="editStatus" required>
+                                    <option value="" disabled>Choose status</option>
+                                    <option value="operational">Operational</option>
+                                    <option value="maintenance">Maintenance Required</option>
+                                    <option value="out_of_order">Out of Order</option>
+                                </select>
+                                <label>Status</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
+                    <a href="#!" class="waves-effect waves-green btn-flat" onclick="submitEditBBQ()">Save Changes</a>
+                </div>
+            </div>
+
+            <!-- Issues Management Section -->
+            <div class="row">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">Issues Management</span>
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th>Issue ID</th>
+                                        <th>Location</th>
+                                        <th>Reported By</th>
+                                        <th>Issue Type</th>
+                                        <th>Assigned Supervisor</th>
+                                        <th>Status</th>
+                                        <th>Reported Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#ISS001</td>
+                                        <td>Albert Park</td>
+                                        <td>Public User</td>
+                                        <td>Gas Leak</td>
+                                        <td>Unassigned</td>
+                                        <td>Open</td>
+                                        <td>2024-03-20</td>
+                                        <td>
+                                            <a href="#!" class="btn-small">Assign Supervisor</a>
+                                            <a href="#!" class="btn-small">View Details</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>#ISS002</td>
+                                        <td>Fitzroy Gardens</td>
+                                        <td>Public User</td>
+                                        <td>Cleaning Required</td>
+                                        <td>Sarah Johnson</td>
+                                        <td>In Progress</td>
+                                        <td>2024-03-19</td>
+                                        <td>
+                                            <a href="#!" class="btn-small">Reassign</a>
+                                            <a href="#!" class="btn-small">View Details</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded here -->
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        // Load header and footer
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                // Initialize sidenav after header is loaded
+                var elems = document.querySelectorAll('.sidenav');
+                var instances = M.Sidenav.init(elems);
+            });
+
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+
+        // Initialize modals
+        document.addEventListener('DOMContentLoaded', function () {
+            var modals = document.querySelectorAll('.modal');
+            M.Modal.init(modals);
+
+            // Initialize select elements
+            var selects = document.querySelectorAll('select');
+            M.FormSelect.init(selects);
+        });
+
+        // Function to handle create BBQ form submission
+        function submitCreateBBQ() {
+            const form = document.getElementById('createBBQForm');
+            const formData = {
+                locationName: document.getElementById('locationName').value,
+                address: document.getElementById('address').value,
+                supervisor: document.getElementById('supervisor').value,
+                status: document.getElementById('status').value
+            };
+
+            // Here you would typically make an API call to create the BBQ location
+            console.log('Creating new BBQ location:', formData);
+
+            // Close the modal and reset the form
+            const modal = M.Modal.getInstance(document.getElementById('createBBQModal'));
+            modal.close();
+            form.reset();
+        }
+
+        // Function to handle edit BBQ form submission
+        function submitEditBBQ() {
+            const form = document.getElementById('editBBQForm');
+            const formData = {
+                locationId: document.getElementById('editLocationId').value,
+                locationName: document.getElementById('editLocationName').value,
+                address: document.getElementById('editAddress').value,
+                supervisor: document.getElementById('editSupervisor').value,
+                status: document.getElementById('editStatus').value
+            };
+
+            // Here you would typically make an API call to update the BBQ location
+            console.log('Updating BBQ location:', formData);
+
+            // Close the modal and reset the form
+            const modal = M.Modal.getInstance(document.getElementById('editBBQModal'));
+            modal.close();
+            form.reset();
+        }
+
+        // Function to populate edit form with BBQ location data
+        function editBBQLocation(locationId, locationName, address, supervisor, status) {
+            document.getElementById('editLocationId').value = locationId;
+            document.getElementById('editLocationName').value = locationName;
+            document.getElementById('editAddress').value = address;
+            document.getElementById('editSupervisor').value = supervisor;
+            document.getElementById('editStatus').value = status;
+
+            // Reinitialize select elements
+            M.FormSelect.init(document.getElementById('editSupervisor'));
+            M.FormSelect.init(document.getElementById('editStatus'));
+        }
+    </script>
+</body>
+
+</html>
