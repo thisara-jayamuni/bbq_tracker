@@ -1,13 +1,5 @@
 // Load header and footer when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
-  // Check localStorage and update navigation
-  try {
-    const storedUser = localStorage.getItem('isLoggedIn');
-    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-  } catch (error) {
-    console.error('Error accessing localStorage:', error);
-  }
-
   // Load header
   fetch('/components/header.html')
     .then((response) => {
@@ -17,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return response.text();
     })
     .then((data) => {
-      // Try both standard and placeholder IDs
       const headerElement =
         document.getElementById('header') ||
         document.getElementById('header-placeholder');
@@ -26,13 +17,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       headerElement.innerHTML = data;
 
-      // Wait for the DOM to update with the new content
+      // Initialize sidenav after header is loaded
       setTimeout(() => {
         try {
           const elems = document.querySelectorAll('.sidenav');
           if (elems.length > 0) {
             M.Sidenav.init(elems);
-            updateNavigation();
+            checkAuth();
           }
         } catch (error) {
           console.error('Error initializing sidenav:', error);
@@ -52,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return response.text();
     })
     .then((data) => {
-      // Try both standard and placeholder IDs
       const footerElement =
         document.getElementById('footer') ||
         document.getElementById('footer-placeholder');
@@ -64,79 +54,106 @@ document.addEventListener('DOMContentLoaded', function () {
     .catch((error) => {
       console.error('Error loading footer:', error);
     });
+
+  // Initialize login form if it exists
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      handleLogin(email, password);
+    });
+  }
 });
 
-// Function to update navigation visibility
-function updateNavigation() {
-  const rawIsLoggedIn = localStorage.getItem('isLoggedIn');
+// Function to handle login
+async function handleLogin(email, password) {
+  try {
+    const response = await axios.post('http://localhost:5000/api/auth/login', {
+      email,
+      password,
+    });
+
+    // Store token and user data
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('userData', JSON.stringify(response.data.userData));
+
+    // Show success message
+    M.toast({
+      html: 'Login successful!',
+      classes: 'green',
+    });
+
+    // Redirect based on role
+    const role = response.data.userData.role;
+    window.location.href = getDashboardUrl(role);
+  } catch (error) {
+    console.error('Login error:', error);
+    M.toast({
+      html: error.response?.data?.message || 'Login failed. Please try again.',
+      classes: 'red',
+    });
+  }
+}
+
+// Function to check authentication status
+function checkAuth() {
+  const token = localStorage.getItem('token');
   const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-  const isLoggedIn = rawIsLoggedIn === 'true';
 
+  // Update UI based on auth status
   const userInfoNav = document.getElementById('user-info-nav-item');
-  const userName = document.getElementById('user-name');
+  const dashboardNav = document.getElementById('dashboard-nav-item');
+  const logoutNav = document.getElementById('logout-nav-item');
+  const loginNav = document.getElementById('login-nav-item');
   const mobileUserInfo = document.getElementById('mobile-user-info');
-  const mobileUserName = document.getElementById('mobile-user-name');
-  const loginBtn = document.getElementById('login-nav-item');
-  const logoutBtn = document.getElementById('logout-nav-item');
-  const mobileLoginBtn = document.getElementById('mobile-login-item');
-  const mobileLogoutBtn = document.getElementById('mobile-logout-item');
-  const dashboardBtn = document.getElementById('dashboard-nav-item');
-  const dashboardLink = document.getElementById('dashboard-link');
-  const mobileDashboardBtn = document.getElementById('mobile-dashboard-item');
-  const mobileDashboardLink = document.getElementById('mobile-dashboard-link');
+  const mobileDashboardItem = document.getElementById('mobile-dashboard-item');
+  const mobileLogoutItem = document.getElementById('mobile-logout-item');
+  const mobileLoginItem = document.getElementById('mobile-login-item');
 
-  if (
-    userInfoNav &&
-    userName &&
-    mobileUserInfo &&
-    mobileUserName &&
-    loginBtn &&
-    logoutBtn &&
-    mobileLoginBtn &&
-    mobileLogoutBtn &&
-    dashboardBtn &&
-    dashboardLink &&
-    mobileDashboardBtn &&
-    mobileDashboardLink
-  ) {
-    if (isLoggedIn && userData) {
-      // Update user information
-      userName.textContent = userData.name || 'User';
-      mobileUserName.textContent = userData.name || 'User';
-
-      // Update role badge
-      const roleBadge = userInfoNav.querySelector('.badge');
-      const mobileRoleBadge = mobileUserInfo.querySelector('.badge');
-      if (roleBadge && mobileRoleBadge) {
-        roleBadge.textContent = userData.role || 'User';
-        mobileRoleBadge.textContent = userData.role || 'User';
-      }
-
-      // Set dashboard URL based on role
-      const dashboardUrl = getDashboardUrl(userData.role);
-      dashboardLink.href = dashboardUrl;
-      mobileDashboardLink.href = dashboardUrl;
-
-      // Show user info and navigation items
+  if (token && userData) {
+    // User is logged in
+    if (userInfoNav) {
       userInfoNav.style.display = 'block';
-      mobileUserInfo.style.display = 'block';
-      loginBtn.style.display = 'none';
-      logoutBtn.style.display = 'block';
-      dashboardBtn.style.display = 'block';
-      mobileDashboardBtn.style.display = 'block';
-      mobileLoginBtn.style.display = 'none';
-      mobileLogoutBtn.style.display = 'block';
-    } else {
-      // Hide user info and navigation items
-      userInfoNav.style.display = 'none';
-      mobileUserInfo.style.display = 'none';
-      loginBtn.style.display = 'block';
-      logoutBtn.style.display = 'none';
-      dashboardBtn.style.display = 'none';
-      mobileDashboardBtn.style.display = 'none';
-      mobileLoginBtn.style.display = 'block';
-      mobileLogoutBtn.style.display = 'none';
+      document.getElementById('user-name').textContent =
+        userData.name || userData.email;
     }
+    if (dashboardNav) {
+      dashboardNav.style.display = 'block';
+      document.getElementById('dashboard-link').href = getDashboardUrl(
+        userData.role
+      );
+    }
+    if (logoutNav) logoutNav.style.display = 'block';
+    if (loginNav) loginNav.style.display = 'none';
+
+    // Mobile navigation
+    if (mobileUserInfo) {
+      mobileUserInfo.style.display = 'block';
+      document.getElementById('mobile-user-name').textContent =
+        userData.name || userData.email;
+    }
+    if (mobileDashboardItem) {
+      mobileDashboardItem.style.display = 'block';
+      document.getElementById('mobile-dashboard-link').href = getDashboardUrl(
+        userData.role
+      );
+    }
+    if (mobileLogoutItem) mobileLogoutItem.style.display = 'block';
+    if (mobileLoginItem) mobileLoginItem.style.display = 'none';
+  } else {
+    // User is not logged in
+    if (userInfoNav) userInfoNav.style.display = 'none';
+    if (dashboardNav) dashboardNav.style.display = 'none';
+    if (logoutNav) logoutNav.style.display = 'none';
+    if (loginNav) loginNav.style.display = 'block';
+
+    // Mobile navigation
+    if (mobileUserInfo) mobileUserInfo.style.display = 'none';
+    if (mobileDashboardItem) mobileDashboardItem.style.display = 'none';
+    if (mobileLogoutItem) mobileLogoutItem.style.display = 'none';
+    if (mobileLoginItem) mobileLoginItem.style.display = 'block';
   }
 }
 
@@ -156,17 +173,10 @@ function getDashboardUrl(role) {
   }
 }
 
-// Listen for changes in localStorage
-window.addEventListener('storage', function (e) {
-  if (e.key === 'isLoggedIn') {
-    updateNavigation();
-  }
-});
-
+// Function to handle logout
 function handleLogout() {
-  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('token');
   localStorage.removeItem('userData');
-  updateNavigation();
   window.location.href = '/';
 }
 

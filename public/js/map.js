@@ -5,8 +5,15 @@ let bbqMarkers = [];
 
 // Define initMap function before it's called by the API
 window.initMap = function () {
+  // Check if map element exists
+  const mapElement = document.getElementById('map');
+  if (!mapElement) {
+    console.error('Map element not found');
+    return;
+  }
+
   // Create the map centered on Victoria, Australia
-  map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(mapElement, {
     center: { lat: -37.8136, lng: 144.9631 }, // Melbourne coordinates
     zoom: 10,
     styles: [
