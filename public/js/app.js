@@ -1,19 +1,184 @@
-// Load header
-fetch('components/header.html')
-  .then((response) => response.text())
-  .then((data) => {
-    document.getElementById('header').innerHTML = data;
-    // Initialize sidenav after header is loaded
-    var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems);
-  });
+// Load header and footer when DOM is ready
+document.addEventListener('DOMContentLoaded', function () {
+  // Load header
+  fetch('/components/header.html')
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then((data) => {
+      const headerElement =
+        document.getElementById('header') ||
+        document.getElementById('header-placeholder');
+      if (!headerElement) {
+        throw new Error('Header element not found in DOM');
+      }
+      headerElement.innerHTML = data;
 
-// Load footer
-fetch('components/footer.html')
-  .then((response) => response.text())
-  .then((data) => {
-    document.getElementById('footer').innerHTML = data;
-  });
+      // Initialize sidenav after header is loaded
+      setTimeout(() => {
+        try {
+          const elems = document.querySelectorAll('.sidenav');
+          if (elems.length > 0) {
+            M.Sidenav.init(elems);
+            checkAuth();
+          }
+        } catch (error) {
+          console.error('Error initializing sidenav:', error);
+        }
+      }, 100);
+    })
+    .catch((error) => {
+      console.error('Error loading header:', error);
+    });
+
+  // Load footer
+  fetch('/components/footer.html')
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then((data) => {
+      const footerElement =
+        document.getElementById('footer') ||
+        document.getElementById('footer-placeholder');
+      if (!footerElement) {
+        throw new Error('Footer element not found in DOM');
+      }
+      footerElement.innerHTML = data;
+    })
+    .catch((error) => {
+      console.error('Error loading footer:', error);
+    });
+
+  // Initialize login form if it exists
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      handleLogin(email, password);
+    });
+  }
+});
+
+// Function to handle login
+async function handleLogin(email, password) {
+  try {
+    const response = await axios.post('http://localhost:5000/api/auth/login', {
+      email,
+      password,
+    });
+
+    // Store token and user data
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('userData', JSON.stringify(response.data.userData));
+
+    // Show success message
+    M.toast({
+      html: 'Login successful!',
+      classes: 'green',
+    });
+
+    // Redirect based on role
+    const role = response.data.userData.role;
+    window.location.href = getDashboardUrl(role);
+  } catch (error) {
+    console.error('Login error:', error);
+    M.toast({
+      html: error.response?.data?.message || 'Login failed. Please try again.',
+      classes: 'red',
+    });
+  }
+}
+
+// Function to check authentication status
+function checkAuth() {
+  const token = localStorage.getItem('token');
+  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+
+  // Update UI based on auth status
+  const userInfoNav = document.getElementById('user-info-nav-item');
+  const dashboardNav = document.getElementById('dashboard-nav-item');
+  const logoutNav = document.getElementById('logout-nav-item');
+  const loginNav = document.getElementById('login-nav-item');
+  const mobileUserInfo = document.getElementById('mobile-user-info');
+  const mobileDashboardItem = document.getElementById('mobile-dashboard-item');
+  const mobileLogoutItem = document.getElementById('mobile-logout-item');
+  const mobileLoginItem = document.getElementById('mobile-login-item');
+
+  if (token && userData) {
+    // User is logged in
+    if (userInfoNav) {
+      userInfoNav.style.display = 'block';
+      document.getElementById('user-name').textContent =
+        userData.name || userData.email;
+    }
+    if (dashboardNav) {
+      dashboardNav.style.display = 'block';
+      document.getElementById('dashboard-link').href = getDashboardUrl(
+        userData.role
+      );
+    }
+    if (logoutNav) logoutNav.style.display = 'block';
+    if (loginNav) loginNav.style.display = 'none';
+
+    // Mobile navigation
+    if (mobileUserInfo) {
+      mobileUserInfo.style.display = 'block';
+      document.getElementById('mobile-user-name').textContent =
+        userData.name || userData.email;
+    }
+    if (mobileDashboardItem) {
+      mobileDashboardItem.style.display = 'block';
+      document.getElementById('mobile-dashboard-link').href = getDashboardUrl(
+        userData.role
+      );
+    }
+    if (mobileLogoutItem) mobileLogoutItem.style.display = 'block';
+    if (mobileLoginItem) mobileLoginItem.style.display = 'none';
+  } else {
+    // User is not logged in
+    if (userInfoNav) userInfoNav.style.display = 'none';
+    if (dashboardNav) dashboardNav.style.display = 'none';
+    if (logoutNav) logoutNav.style.display = 'none';
+    if (loginNav) loginNav.style.display = 'block';
+
+    // Mobile navigation
+    if (mobileUserInfo) mobileUserInfo.style.display = 'none';
+    if (mobileDashboardItem) mobileDashboardItem.style.display = 'none';
+    if (mobileLogoutItem) mobileLogoutItem.style.display = 'none';
+    if (mobileLoginItem) mobileLoginItem.style.display = 'block';
+  }
+}
+
+// Function to get dashboard URL based on user role
+function getDashboardUrl(role) {
+  switch (role.toLowerCase()) {
+    case 'admin':
+      return '/admin/dashboard.html';
+    case 'supervisor':
+      return '/supervisor/dashboard.html';
+    case 'council':
+      return '/council/dashboard.html';
+    case 'cleaner':
+      return '/cleaner/dashboard.html';
+    default:
+      return '/';
+  }
+}
+
+// Function to handle logout
+function handleLogout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('userData');
+  window.location.href = '/';
+}
 
 // Function to handle fault reporting
 function reportFault(locationName) {
@@ -78,9 +243,6 @@ function submitFault(locationName) {
   }
 
   // TODO: Send fault report to backend
-  console.log('Fault reported for:', locationName);
-  console.log('Description:', description);
-
   M.toast({ html: 'Fault report submitted successfully', classes: 'green' });
   closeFaultModal();
 }

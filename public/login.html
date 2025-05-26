@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - VIC BBQ Tracker</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="/style.css" rel="stylesheet" />
 </head>
 
-<body>
+<body class="blue lighten-5">
     <!-- Include Header -->
     <div id="header"></div>
 
@@ -22,18 +23,21 @@
                     <form id="loginForm">
                         <div class="row">
                             <div class="input-field col s12">
+                                <i class="material-icons prefix">email</i>
                                 <input id="email" type="email" class="validate" required>
                                 <label for="email">Email</label>
                             </div>
                         </div>
                         <div class="row">
                             <div class="input-field col s12">
+                                <i class="material-icons prefix">lock</i>
                                 <input id="password" type="password" class="validate" required>
                                 <label for="password">Password</label>
                             </div>
                         </div>
                         <div class="row">
                             <button class="btn waves-effect waves-light btn-login" type="submit" name="action">
+                                <i class="material-icons left">login</i>
                                 Login
                             </button>
                         </div>
@@ -86,12 +90,17 @@
     <div id="footer"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/app.js"></script>
     <script>
         // Load header and footer
         fetch('components/header.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('header').innerHTML = data;
+                // Initialize sidenav after header is loaded
+                var elems = document.querySelectorAll('.sidenav');
+                var instances = M.Sidenav.init(elems);
             });
 
         fetch('components/footer.html')
@@ -99,91 +108,6 @@
             .then(data => {
                 document.getElementById('footer').innerHTML = data;
             });
-
-        // Handle form submission
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            // Sample credentials validation
-            const validCredentials = {
-                'admin@bbqtracker.com': {
-                    password: 'Admin@123',
-                    role: 'Admin',
-                    name: 'Admin User',
-                    dashboard: '/admin/dashboard.html'
-                },
-                'council@bbqtracker.com': {
-                    password: 'Council@123',
-                    role: 'Council',
-                    name: 'Council User',
-                    dashboard: '/council/dashboard.html'
-                },
-                'supervisor@bbqtracker.com': {
-                    password: 'Supervisor@123',
-                    role: 'Supervisor',
-                    name: 'Supervisor User',
-                    dashboard: '/supervisor/dashboard.html'
-                },
-                'cleaner@bbqtracker.com': {
-                    password: 'Cleaner@123',
-                    role: 'Cleaner',
-                    name: 'Cleaner User',
-                    dashboard: '/cleaner/dashboard.html'
-                }
-            };
-
-            if (validCredentials[email] && validCredentials[email].password === password) {
-                const userData = validCredentials[email];
-
-                // Store login state and user data
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userData', JSON.stringify({
-                    email: email,
-                    name: userData.name,
-                    role: userData.role,
-                    dashboard: userData.dashboard
-                }));
-
-                // Show success message
-                M.toast({ html: `Login successful! Redirecting to ${userData.role} Dashboard...`, classes: 'green' });
-
-                // Redirect to appropriate dashboard after a short delay
-                setTimeout(() => {
-                    window.location.href = userData.dashboard;
-                }, 1000);
-            } else {
-                // Show error message
-                M.toast({ html: 'Invalid email or password', classes: 'red' });
-            }
-        });
-
-        // Check if user is already logged in
-        if (localStorage.getItem('isLoggedIn') === 'true') {
-            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-
-            // Check user role and redirect accordingly
-            switch (userData.role) {
-                case 'Admin':
-                    window.location.href = '/admin/dashboard.html';
-                    break;
-                case 'Council':
-                    window.location.href = '/council/dashboard.html';
-                    break;
-                case 'Supervisor':
-                    window.location.href = '/supervisor/dashboard.html';
-                    break;
-                case 'Cleaner':
-                    window.location.href = '/cleaner/dashboard.html';
-                    break;
-                default:
-                    // If no valid role is found, redirect to login
-                    localStorage.removeItem('isLoggedIn');
-                    localStorage.removeItem('userData');
-                    window.location.href = '/login.html';
-            }
-        }
     </script>
 
     <style>
