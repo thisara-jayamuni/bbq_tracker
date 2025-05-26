@@ -3,7 +3,15 @@ const BBQ = require("../models/BBQ");
 const getAllBBQs = async (req, res) => {
   try {
     const bbqs = await BBQ.find(); 
-    res.status(200).json(bbqs);   
+    const formattedBBQs = bbqs.map(bbq => ({
+      lat: bbq.location.coordinates[1],            // Adjust field names if needed
+      lng: bbq.location.coordinates[0],
+      name: bbq.name,
+      cleanliness: bbq.status,
+      lastCleaned: bbq.lastCleaned,
+      status: bbq.status,
+    }));
+    res.status(200).json(formattedBBQs);   
   } catch (error) {
     res.status(500).json({ error });
   }
