@@ -5,7 +5,7 @@ const get = async () => {
     return await User.find().select('-password');
     // return null;
   } catch (error) {
-    console.error("AddUser Controller Error:", error.message);
+    console.error('AddUser Controller Error:', error.message);
     throw error;
   }
 };
@@ -15,17 +15,16 @@ const getById = async (id) => {
     return await User.findById(id).select('-password');
     // return null;
   } catch (error) {
-    console.error("AddUser Controller Error:", error.message);
+    console.error('AddUser Controller Error:', error.message);
     throw error;
   }
 };
 
 const add = async (projectData) => {
   try {
-
     const existingUser = await User.findOne({ email: projectData.email });
     if (existingUser) {
-      throw new Error("Email already exists");
+      throw new Error('Email already exists');
     }
 
     const user = new User(projectData);
@@ -36,7 +35,7 @@ const add = async (projectData) => {
 
     return userObj;
   } catch (error) {
-    console.error("AddUser Controller Error:", error.message);
+    console.error('AddUser Controller Error:', error.message);
     throw error;
   }
 };
@@ -46,7 +45,7 @@ const updateById = async (id, projectData) => {
     return await User.findByIdAndUpdate(id, projectData, { new: true });
     // return null;
   } catch (error) {
-    console.error("AddUser Controller Error:", error.message);
+    console.error('AddUser Controller Error:', error.message);
     throw error;
   }
 };
@@ -56,12 +55,15 @@ const removeById = async (id) => {
     return await User.findByIdAndDelete(id);
     // return null;
   } catch (error) {
-    console.error("AddUser Controller Error:", error.message);
+    console.error('AddUser Controller Error:', error.message);
     throw error;
   }
 };
 
-const getByEmail = async (email) => {
+const getByEmail = async (email, includePassword = false) => {
+  if (includePassword) {
+    return await User.findOne({ email });
+  }
   return await User.findOne({ email }).select('-password');
 };
 
@@ -81,5 +83,5 @@ module.exports = {
   getById,
   getByEmail,
   updateByEmail,
-  removeByEmail
+  removeByEmail,
 };
