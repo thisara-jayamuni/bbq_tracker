@@ -84,3 +84,30 @@ export const faultService = {
     }
   },
 };
+
+// User service
+export const userService = {
+  // Get all users
+  getAllUsers: async () => {
+    const response = await axiosInstance.get('/users');
+    return response.data;
+  },
+
+  // Create new user
+  createUser: async (userData) => {
+    const response = await axiosInstance.post('/users', userData);
+    return response.data;
+  },
+
+  // Update user
+  updateUser: async (userId, userData) => {
+    const response = await axiosInstance.put(`/users/id/${userId}`, userData);
+    return response.data;
+  },
+
+  // Delete user
+  deleteUser: async (userId) => {
+    const response = await axiosInstance.delete(`/users/${userId}`);
+    return response.data;
+  },
+};

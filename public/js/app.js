@@ -1,6 +1,7 @@
 // Import axios instance and services
 import axiosInstance from './axios-config.js';
 import { authService } from './services/api.js';
+import { ROLE_DISPLAY_NAMES } from './utils/constants.js';
 
 // Make handleLogout function globally available
 window.handleLogout = function () {
@@ -198,69 +199,67 @@ async function handleLogin(email, password) {
   }
 }
 
-// Function to check authentication status
-function checkAuth() {
+// Function to check authentication
+export function checkAuth() {
   const token = localStorage.getItem('token');
   const userData = JSON.parse(localStorage.getItem('userData') || '{}');
 
-  // Update UI based on auth status
-  const userInfoNav = document.getElementById('user-info-nav-item');
-  const dashboardNav = document.getElementById('dashboard-nav-item');
-  const logoutNav = document.getElementById('logout-nav-item');
-  const loginNav = document.getElementById('login-nav-item');
+  // Get header elements
+  const userInfoNavItem = document.getElementById('user-info-nav-item');
+  const dashboardNavItem = document.getElementById('dashboard-nav-item');
+  const logoutNavItem = document.getElementById('logout-nav-item');
+  const loginNavItem = document.getElementById('login-nav-item');
   const mobileUserInfo = document.getElementById('mobile-user-info');
   const mobileDashboardItem = document.getElementById('mobile-dashboard-item');
   const mobileLogoutItem = document.getElementById('mobile-logout-item');
   const mobileLoginItem = document.getElementById('mobile-login-item');
 
   if (token && userData) {
-    // User is logged in
-    if (userInfoNav) {
-      userInfoNav.style.display = 'block';
-      document.getElementById('user-name').textContent =
-        userData.userName || userData.email;
-    }
-    if (dashboardNav) {
-      // Only show dashboard for non-user roles
-      if (userData.role && userData.role.toLowerCase() !== 'user') {
-        dashboardNav.style.display = 'block';
-        document.getElementById('dashboard-link').href = getDashboardUrl(
-          userData.role
-        );
-      } else {
-        dashboardNav.style.display = 'none';
-      }
-    }
-    if (logoutNav) logoutNav.style.display = 'block';
-    if (loginNav) loginNav.style.display = 'none';
-
-    // Mobile navigation
-    if (mobileUserInfo) {
-      mobileUserInfo.style.display = 'block';
-      document.getElementById('mobile-user-name').textContent =
-        userData.userName || userData.email;
-    }
-    if (mobileDashboardItem) {
-      // Only show dashboard for non-user roles
-      if (userData.role && userData.role.toLowerCase() !== 'user') {
-        mobileDashboardItem.style.display = 'block';
-        document.getElementById('mobile-dashboard-link').href = getDashboardUrl(
-          userData.role
-        );
-      } else {
-        mobileDashboardItem.style.display = 'none';
-      }
-    }
+    // Show user info and dashboard button
+    if (userInfoNavItem) userInfoNavItem.style.display = 'block';
+    if (dashboardNavItem) dashboardNavItem.style.display = 'block';
+    if (logoutNavItem) logoutNavItem.style.display = 'block';
+    if (loginNavItem) loginNavItem.style.display = 'none';
+    if (mobileUserInfo) mobileUserInfo.style.display = 'block';
+    if (mobileDashboardItem) mobileDashboardItem.style.display = 'block';
     if (mobileLogoutItem) mobileLogoutItem.style.display = 'block';
     if (mobileLoginItem) mobileLoginItem.style.display = 'none';
-  } else {
-    // User is not logged in
-    if (userInfoNav) userInfoNav.style.display = 'none';
-    if (dashboardNav) dashboardNav.style.display = 'none';
-    if (logoutNav) logoutNav.style.display = 'none';
-    if (loginNav) loginNav.style.display = 'block';
 
-    // Mobile navigation
+    // Set user name and role
+    const userName = document.getElementById('user-name');
+    const userRole = document.getElementById('user-role');
+    const mobileUserName = document.getElementById('mobile-user-name');
+    const mobileUserRole = document.getElementById('mobile-user-role');
+
+    if (userName) userName.textContent = userData.userName;
+    if (userRole)
+      userRole.textContent = ROLE_DISPLAY_NAMES[userData.role] || userData.role;
+    if (mobileUserName) mobileUserName.textContent = userData.userName;
+    if (mobileUserRole)
+      mobileUserRole.textContent =
+        ROLE_DISPLAY_NAMES[userData.role] || userData.role;
+
+    // Set dashboard link based on role
+    const dashboardLink = document.getElementById('dashboard-link');
+    const mobileDashboardLink = document.getElementById(
+      'mobile-dashboard-link'
+    );
+    const dashboardUrl = getDashboardUrl(userData.role);
+
+    if (dashboardLink) dashboardLink.href = dashboardUrl;
+    if (mobileDashboardLink) mobileDashboardLink.href = dashboardUrl;
+
+    // Hide dashboard button for regular users
+    if (userData.role === 'user') {
+      if (dashboardNavItem) dashboardNavItem.style.display = 'none';
+      if (mobileDashboardItem) mobileDashboardItem.style.display = 'none';
+    }
+  } else {
+    // Hide user info and dashboard button
+    if (userInfoNavItem) userInfoNavItem.style.display = 'none';
+    if (dashboardNavItem) dashboardNavItem.style.display = 'none';
+    if (logoutNavItem) logoutNavItem.style.display = 'none';
+    if (loginNavItem) loginNavItem.style.display = 'block';
     if (mobileUserInfo) mobileUserInfo.style.display = 'none';
     if (mobileDashboardItem) mobileDashboardItem.style.display = 'none';
     if (mobileLogoutItem) mobileLogoutItem.style.display = 'none';

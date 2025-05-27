@@ -36,7 +36,23 @@
                                     <i class="material-icons">add</i>
                                 </a>
                             </div>
-                            <table class="striped">
+                            <div id="tableLoader" class="center-align" style="padding: 20px;">
+                                <div class="preloader-wrapper active">
+                                    <div class="spinner-layer spinner-blue-only">
+                                        <div class="circle-clipper left">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <div class="gap-patch">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <div class="circle-clipper right">
+                                            <div class="circle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="margin-top: 10px; color: #666;">Loading users...</p>
+                            </div>
+                            <table class="striped" style="display: none;">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -48,36 +64,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>John Smith</td>
-                                        <td>john.smith@council.vic.gov.au</td>
-                                        <td>Council</td>
-                                        <td><span class="status-badge active">Active</span></td>
-                                        <td>
-                                            <a href="#!" class="btn-small" onclick="openUpdateUserModal(1)">
-                                                <i class="material-icons">edit</i>
-                                            </a>
-                                            <a href="#!" class="btn-small red" onclick="deleteUser(1)">
-                                                <i class="material-icons">delete</i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Sarah Johnson</td>
-                                        <td>sarah.j@council.vic.gov.au</td>
-                                        <td>Supervisor</td>
-                                        <td><span class="status-badge active">Active</span></td>
-                                        <td>
-                                            <a href="#!" class="btn-small" onclick="openUpdateUserModal(2)">
-                                                <i class="material-icons">edit</i>
-                                            </a>
-                                            <a href="#!" class="btn-small red" onclick="deleteUser(2)">
-                                                <i class="material-icons">delete</i>
-                                            </a>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -96,7 +82,7 @@
                 <div class="row">
                     <div class="input-field col s12">
                         <input id="createName" type="text" required>
-                        <label for="createName">Full Name</label>
+                        <label for="createName">User Name</label>
                     </div>
                 </div>
                 <div class="row">
@@ -109,9 +95,6 @@
                     <div class="input-field col s12">
                         <select id="createRole" required>
                             <option value="" disabled selected>Choose role</option>
-                            <option value="council">Council</option>
-                            <option value="supervisor">Supervisor</option>
-                            <option value="cleaner">Cleaner</option>
                         </select>
                         <label>Role</label>
                     </div>
@@ -139,7 +122,7 @@
                 <div class="row">
                     <div class="input-field col s12">
                         <input id="updateName" type="text" required>
-                        <label for="updateName">Full Name</label>
+                        <label for="updateName">User Name</label>
                     </div>
                 </div>
                 <div class="row">
@@ -152,21 +135,8 @@
                     <div class="input-field col s12">
                         <select id="updateRole" required>
                             <option value="" disabled>Choose role</option>
-                            <option value="council">Council</option>
-                            <option value="supervisor">Supervisor</option>
-                            <option value="cleaner">Cleaner</option>
                         </select>
                         <label>Role</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12">
-                        <select id="updateStatus" required>
-                            <option value="" disabled>Choose status</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                        <label>Status</label>
                     </div>
                 </div>
             </form>
@@ -190,10 +160,42 @@
     <!-- Load app.js -->
     <script type="module" src="/js/app.js"></script>
 
-    <script>
+    <script type="module">
+        import { userService } from '/js/services/api.js';
+        import { showToast, isLoggedIn, getUserData } from '/js/utils/helpers.js';
+        import { USER_ROLES, ROLE_DISPLAY_NAMES } from '/js/utils/constants.js';
+
+        // Function to check authentication and role
+        function checkAuthAndRole() {
+            if (!isLoggedIn()) {
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            const userData = getUserData();
+            if (!userData || userData.role !== 'admin') {
+                window.location.href = '/';
+                return false;
+            }
+
+            return true;
+        }
+
+        // Function to generate role options HTML
+        function generateRoleOptions() {
+            return Object.entries(ROLE_DISPLAY_NAMES)
+                .map(([value, label]) => `<option value="${value}">${label}</option>`)
+                .join('');
+        }
+
         // Function to initialize the page
         async function initializePage() {
             try {
+                // Check authentication and role first
+                if (!checkAuthAndRole()) {
+                    return;
+                }
+
                 // Load header
                 const headerResponse = await fetch('/components/header.html');
                 const headerData = await headerResponse.text();
@@ -211,79 +213,194 @@
                 // Initialize modals and selects
                 const modals = document.querySelectorAll('.modal');
                 M.Modal.init(modals);
-                const selects = document.querySelectorAll('select');
-                M.FormSelect.init(selects);
 
-                // Check authentication
-                checkAuth();
+                // Initialize role selects with options
+                const roleSelects = document.querySelectorAll('select[id$="Role"]');
+                roleSelects.forEach(select => {
+                    select.innerHTML = `
+                        <option value="" disabled selected>Choose role</option>
+                        ${generateRoleOptions()}
+                    `;
+                    M.FormSelect.init(select);
+                });
 
-                // Verify admin access
-                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-                if (!userData || userData.role !== 'admin') {
-                    window.location.href = '/';
-                }
+                // Load users
+                await loadUsers();
             } catch (error) {
                 console.error('Error initializing page:', error);
+                showToast('Error initializing page', 'red');
             }
         }
 
         // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', initializePage);
 
+        // Function to load users
+        async function loadUsers() {
+            try {
+                const response = await userService.getAllUsers();
+                const users = response.users || [];
+                const tbody = document.querySelector('table tbody');
+                tbody.innerHTML = '';
+
+                if (users.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="center-align" style="padding: 20px;">
+                                <p style="color: #666;">No users found</p>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    users.forEach(user => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${user._id}</td>
+                            <td>${user.userName}</td>
+                            <td>${user.email}</td>
+                            <td>${ROLE_DISPLAY_NAMES[user.role] || user.role}</td>
+                            <td><span class="status-badge ${user.status ? 'active' : 'inactive'}">${user.status ? 'Active' : 'Inactive'}</span></td>
+                            <td>
+                                <a href="#!" class="btn-small" onclick="openUpdateUserModal('${user._id}')">
+                                    <i class="material-icons">edit</i>
+                                </a>
+                                <a href="#!" class="btn-small red" onclick="deleteUser('${user._id}')">
+                                    <i class="material-icons">delete</i>
+                                </a>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // Hide loader, show table
+                document.getElementById('tableLoader').style.display = 'none';
+                document.querySelector('table').style.display = 'table';
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showToast('Error loading users', 'red');
+
+                // Show error state in table
+                const tbody = document.querySelector('table tbody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="center-align" style="padding: 20px;">
+                            <p style="color: #f44336;">Error loading users. Please try again.</p>
+                        </td>
+                    </tr>
+                `;
+
+                // Hide loader, show table
+                document.getElementById('tableLoader').style.display = 'none';
+                document.querySelector('table').style.display = 'table';
+            }
+        }
+
         // User management functions
-        function openCreateUserModal() {
+        window.openCreateUserModal = function () {
             var modal = M.Modal.getInstance(document.getElementById('createUserModal'));
             modal.open();
         }
 
-        function openUpdateUserModal(userId) {
-            // In a real application, you would fetch user data here
-            document.getElementById('updateUserId').value = userId;
-            var modal = M.Modal.getInstance(document.getElementById('updateUserModal'));
-            modal.open();
+        window.openUpdateUserModal = async function (userId) {
+            try {
+                const response = await userService.getAllUsers();
+                const users = response.users || [];
+                const user = users.find(u => u._id === userId);
+
+                if (!user) {
+                    showToast('User not found', 'red');
+                    return;
+                }
+
+                // Set form values
+                document.getElementById('updateUserId').value = user._id;
+                document.getElementById('updateName').value = user.userName;
+                document.getElementById('updateEmail').value = user.email;
+
+                // Set role
+                const roleSelect = document.getElementById('updateRole');
+                roleSelect.value = user.role;
+
+                // Reinitialize Materialize select element
+                M.FormSelect.init(roleSelect);
+
+                // Open modal
+                const modal = M.Modal.getInstance(document.getElementById('updateUserModal'));
+                modal.open();
+            } catch (error) {
+                console.error('Error opening update modal:', error);
+                showToast('Error loading user data', 'red');
+            }
         }
 
-        function createUser() {
-            // Get form data
-            const formData = {
-                name: document.getElementById('createName').value,
-                email: document.getElementById('createEmail').value,
-                role: document.getElementById('createRole').value,
-                password: document.getElementById('createPassword').value
-            };
+        window.createUser = async function () {
+            try {
+                const formData = {
+                    userName: document.getElementById('createName').value,
+                    email: document.getElementById('createEmail').value,
+                    role: document.getElementById('createRole').value,
+                    password: document.getElementById('createPassword').value,
+                    status: true // Default to active for new users
+                };
 
-            // In a real application, you would send this data to your backend
-            console.log('Creating user:', formData);
+                await userService.createUser(formData);
+                showToast('User created successfully', 'green');
 
-            // Close modal and reset form
-            var modal = M.Modal.getInstance(document.getElementById('createUserModal'));
-            modal.close();
-            document.getElementById('createUserForm').reset();
+                // Close modal and reset form
+                var modal = M.Modal.getInstance(document.getElementById('createUserModal'));
+                modal.close();
+                document.getElementById('createUserForm').reset();
+
+                // Reload users
+                await loadUsers();
+            } catch (error) {
+                console.error('Error creating user:', error);
+                showToast(error.response?.data?.message || 'Error creating user', 'red');
+            }
         }
 
-        function updateUser() {
-            // Get form data
-            const formData = {
-                id: document.getElementById('updateUserId').value,
-                name: document.getElementById('updateName').value,
-                email: document.getElementById('updateEmail').value,
-                role: document.getElementById('updateRole').value,
-                status: document.getElementById('updateStatus').value
-            };
+        window.updateUser = async function () {
+            try {
+                const userId = document.getElementById('updateUserId').value;
+                const formData = {
+                    userName: document.getElementById('updateName').value,
+                    email: document.getElementById('updateEmail').value,
+                    role: document.getElementById('updateRole').value
+                };
 
-            // In a real application, you would send this data to your backend
-            console.log('Updating user:', formData);
+                // Validate form data
+                if (!formData.userName || !formData.email || !formData.role) {
+                    showToast('Please fill in all required fields', 'red');
+                    return;
+                }
 
-            // Close modal and reset form
-            var modal = M.Modal.getInstance(document.getElementById('updateUserModal'));
-            modal.close();
-            document.getElementById('updateUserForm').reset();
+                await userService.updateUser(userId, formData);
+                showToast('User updated successfully', 'green');
+
+                // Close modal and reset form
+                const modal = M.Modal.getInstance(document.getElementById('updateUserModal'));
+                modal.close();
+                document.getElementById('updateUserForm').reset();
+
+                // Reload users
+                await loadUsers();
+            } catch (error) {
+                console.error('Error updating user:', error);
+                showToast(error.response?.data?.message || 'Error updating user', 'red');
+            }
         }
 
-        function deleteUser(userId) {
+        window.deleteUser = async function (userId) {
             if (confirm('Are you sure you want to delete this user?')) {
-                // In a real application, you would send a delete request to your backend
-                console.log('Deleting user:', userId);
+                try {
+                    await userService.deleteUser(userId);
+                    showToast('User deleted successfully', 'green');
+                    await loadUsers();
+                } catch (error) {
+                    console.error('Error deleting user:', error);
+                    showToast(error.response?.data?.message || 'Error deleting user', 'red');
+                }
             }
         }
     </script>
