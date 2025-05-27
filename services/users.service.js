@@ -75,6 +75,16 @@ const removeByEmail = async (email) => {
   return await User.findOneAndDelete({ email });
 };
 
+const getByRole = async (role) => {
+  try {
+    return await User.find({role: role});
+    // return null;
+  } catch (error) {
+    console.error('Get by role Controller Error:', error.message);
+    throw error;
+  }
+};
+
 module.exports = {
   get,
   add,
@@ -84,4 +94,5 @@ module.exports = {
   getByEmail,
   updateByEmail,
   removeByEmail,
+  getByRole
 };
