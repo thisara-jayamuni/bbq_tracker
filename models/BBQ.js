@@ -18,9 +18,14 @@ const BBQSchema = new mongoose.Schema({
       required: true,
     },
   },
+  cleanliness: {
+    type: String,
+    enum: ['Dirty', 'Clean'],
+    default: 'Clean',
+  },
   status: {
     type: String,
-    enum: ['Working', 'Faulty', 'Cleaning Required', 'Offline'],
+    enum: ['Working', 'Faulty', 'Cleaning Required', 'Deep Cleaning Required', 'Offline'],
     default: 'Working',
   },
   lastCleaned: {

@@ -4,10 +4,11 @@ const getAllBBQs = async (req, res) => {
   try {
     const bbqs = await BBQ.find(); 
     const formattedBBQs = bbqs.map(bbq => ({
-      lat: bbq.location.coordinates[1],            // Adjust field names if needed
+      id: bbq._id,                              
+      lat: bbq.location.coordinates[1],          
       lng: bbq.location.coordinates[0],
       name: bbq.name,
-      cleanliness: bbq.status,
+      cleanliness: bbq.cleanliness,
       lastCleaned: bbq.lastCleaned,
       status: bbq.status,
     }));
