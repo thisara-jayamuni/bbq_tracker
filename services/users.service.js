@@ -1,38 +1,87 @@
-// const User = require('../models/users');
+const User = require('../models/User');
 
-exports.get = async () => {
+const get = async () => {
   try {
-    // return await User.find();
-    return null;
+    return await User.find().select('-password');
+    // return null;
   } catch (error) {
-    throw new Error('Could not fetch users');
+    console.error('AddUser Controller Error:', error.message);
+    throw error;
   }
 };
 
-exports.add = async (projectData) => {
+const getById = async (id) => {
   try {
-    // const user = new User(projectData);
-    // return await user.save();
-    return null;
+    return await User.findById(id).select('-password');
+    // return null;
   } catch (error) {
-    throw new Error('Could not add user');
+    console.error('AddUser Controller Error:', error.message);
+    throw error;
   }
 };
 
-exports.update = async (id, projectData) => {
+const add = async (projectData) => {
   try {
-    // return await User.findByIdAndUpdate(id, projectData, { new: true });
-    return null;
+    const existingUser = await User.findOne({ email: projectData.email });
+    if (existingUser) {
+      throw new Error('Email already exists');
+    }
+
+    const user = new User(projectData);
+    const savedUser = await user.save();
+
+    const userObj = savedUser.toObject();
+    delete userObj.password;
+
+    return userObj;
   } catch (error) {
-    throw new Error('Could not update user');
+    console.error('AddUser Controller Error:', error.message);
+    throw error;
   }
 };
 
-exports.remove = async (id) => {
+const updateById = async (id, projectData) => {
   try {
-    // return await User.findByIdAndDelete(id);
-    return null;
+    return await User.findByIdAndUpdate(id, projectData, { new: true });
+    // return null;
   } catch (error) {
-    throw new Error('Could not delete user');
+    console.error('AddUser Controller Error:', error.message);
+    throw error;
   }
+};
+
+const removeById = async (id) => {
+  try {
+    return await User.findByIdAndDelete(id);
+    // return null;
+  } catch (error) {
+    console.error('AddUser Controller Error:', error.message);
+    throw error;
+  }
+};
+
+const getByEmail = async (email, includePassword = false) => {
+  if (includePassword) {
+    return await User.findOne({ email });
+  }
+  return await User.findOne({ email }).select('-password');
+};
+
+const updateByEmail = async (email, data) => {
+  return await User.findOneAndUpdate({ email }, data, { new: true });
+};
+
+const removeByEmail = async (email) => {
+  return await User.findOneAndDelete({ email });
+};
+
+module.exports = {
+  get,
+  add,
+  updateById,
+  removeById,
+  getById,
+  getByEmail,
+  updateByEmail,
+  removeByEmail,
 };

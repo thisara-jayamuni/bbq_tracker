@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VIC BBQ Tracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/css/variables.css" rel="stylesheet" />
+    <link href="/css/components.css" rel="stylesheet" />
+    <link href="/style.css" rel="stylesheet" />
+    <!-- Load configuration first -->
+    <script src="/js/config.js"></script>
+    <!-- Load Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body class="blue lighten-5">
+    <!-- Include Header -->
+    <div id="header"></div>
+
+    <div class="row map-row">
+        <div class="col s12 m2 map-col">
+            <div class="legend">
+                <h6>Legend</h6>
+                <div class="legend-item">
+                    <img src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png" class="legend-icon">
+                    <span>Your Location</span>
+                </div>
+                <div class="legend-item">
+                    <img src="http://maps.google.com/mapfiles/ms/icons/green-dot.png" class="legend-icon">
+                    <span>Very Close (< 1km)</span>
+                </div>
+                <div class="legend-item">
+                    <img src="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png" class="legend-icon">
+                    <span>Nearby (1-2km)</span>
+                </div>
+                <div class="legend-item">
+                    <img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png" class="legend-icon">
+                    <span>Far (> 2km)</span>
+                </div>
+            </div>
+        </div>
+        <div class="col s12 m10 map-col">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Include Footer -->
+    <div id="footer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/js/app.js"></script>
+    <!-- Load map.js before Google Maps API -->
+    <script src="/js/map.js"></script>
+    <!-- Load Google Maps API -->
+    <script>
+        function loadGoogleMapsAPI() {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${config.GOOGLE_MAPS_API_KEY}&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+        // Load Google Maps API after DOM is ready
+        document.addEventListener('DOMContentLoaded', loadGoogleMapsAPI);
+    </script>
+</body>
+
+</html>
