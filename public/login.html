@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - VIC BBQ Tracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet" />
+</head>
+
+<body class="blue lighten-5">
+    <!-- Include Header -->
+    <div id="header"></div>
+
+    <div class="main-content">
+        <div class="row" style="margin: 0;">
+            <!-- Login Form Column -->
+            <div class="col s12 m8">
+                <div class="login-container">
+                    <h4 class="login-title">Login to VIC BBQ Tracker</h4>
+                    <form id="loginForm">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">email</i>
+                                <input id="email" type="email" class="validate" required>
+                                <label for="email">Email</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">lock</i>
+                                <input id="password" type="password" class="validate" required>
+                                <label for="password">Password</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <button class="btn waves-effect waves-light btn-login" type="submit" name="action">
+                                <i class="material-icons left">login</i>
+                                Login
+                            </button>
+                        </div>
+                        <div class="register-link">
+                            <p>Don't have an account? <a href="register.html">Register here</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sample Logins Column -->
+            <div class="col s12 m4" style="margin-top: 40px;">
+                <div class="sample-credentials"
+                    style="background: #E3F2FD; padding: 20px; border-radius: 4px; height: 100%;">
+                    <h5 style="margin-top: 0; color: #1976D2;">Sample Logins</h5>
+                    <div class="sample-login-item">
+                        <strong>Admin</strong>
+                        <div class="login-details">
+                            <i class="material-icons tiny">email</i> admin@bbqtracker.com<br>
+                            <i class="material-icons tiny">lock</i> Admin@123
+                        </div>
+                    </div>
+                    <div class="sample-login-item">
+                        <strong>Council</strong>
+                        <div class="login-details">
+                            <i class="material-icons tiny">email</i> council@bbqtracker.com<br>
+                            <i class="material-icons tiny">lock</i> Council@123
+                        </div>
+                    </div>
+                    <div class="sample-login-item">
+                        <strong>Supervisor</strong>
+                        <div class="login-details">
+                            <i class="material-icons tiny">email</i> supervisor@bbqtracker.com<br>
+                            <i class="material-icons tiny">lock</i> Supervisor@123
+                        </div>
+                    </div>
+                    <div class="sample-login-item">
+                        <strong>Cleaner</strong>
+                        <div class="login-details">
+                            <i class="material-icons tiny">email</i> cleaner@bbqtracker.com<br>
+                            <i class="material-icons tiny">lock</i> Cleaner@123
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Footer -->
+    <div id="footer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        // Load header and footer
+        fetch('components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header').innerHTML = data;
+                // Initialize sidenav after header is loaded
+                var elems = document.querySelectorAll('.sidenav');
+                var instances = M.Sidenav.init(elems);
+            });
+
+        fetch('components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer').innerHTML = data;
+            });
+    </script>
+
+    <style>
+        .main-content {
+            padding: 20px;
+            min-height: calc(100vh - 130px);
+        }
+
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-title {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .btn-login {
+            width: 100%;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .sample-credentials {
+            position: sticky;
+            top: 20px;
+        }
+
+        .sample-login-item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .sample-login-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .login-details {
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .login-details i {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        @media only screen and (max-width: 992px) {
+            .sample-credentials {
+                margin-top: 20px;
+                position: static;
+            }
+        }
+    </style>
+</body>
+
+</html>

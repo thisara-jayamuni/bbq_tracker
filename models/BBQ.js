@@ -1,28 +1,31 @@
 const mongoose = require('mongoose');
 
 const BBQSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   location: {
     type: {
       type: String,
       enum: ['Point'],
       default: 'Point',
+      required: true,
     },
     coordinates: {
       type: [Number], // [longitude, latitude]
-      longitude: {
-        type: Number,
-        required: true,
-      },
-      latitude: {
-        type: Number,
-        required: true,
-      },
       required: true,
     },
   },
+  cleanliness: {
+    type: String,
+    enum: ['Dirty', 'Clean'],
+    default: 'Clean',
+  },
   status: {
     type: String,
-    enum: ['Working', 'Faulty', 'Cleaning Required', 'Offline'],
+    enum: ['Working', 'Faulty', 'Cleaning Required', 'Deep Cleaning Required', 'Offline'],
     default: 'Working',
   },
   lastCleaned: {
@@ -35,6 +38,7 @@ const BBQSchema = new mongoose.Schema({
   },
 });
 
+// Add geospatial index
 BBQSchema.index({ location: '2dsphere' });
 
 module.exports = mongoose.model('BBQ', BBQSchema);
