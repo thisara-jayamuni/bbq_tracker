@@ -1,3 +1,13 @@
+// Import axios instance
+import axiosInstance from './axios-config.js';
+
+// Make handleLogout function globally available
+window.handleLogout = function () {
+  localStorage.removeItem('token');
+  localStorage.removeItem('userData');
+  window.location.href = '/';
+};
+
 // Load header and footer when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
   // Load header
@@ -70,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // Function to handle login
 async function handleLogin(email, password) {
   try {
-    const response = await axios.post('http://localhost:5000/api/auth/login', {
+    const response = await axiosInstance.post('/auth/login', {
       email,
       password,
     });
@@ -117,13 +127,18 @@ function checkAuth() {
     if (userInfoNav) {
       userInfoNav.style.display = 'block';
       document.getElementById('user-name').textContent =
-        userData.name || userData.email;
+        userData.userName || userData.email;
     }
     if (dashboardNav) {
-      dashboardNav.style.display = 'block';
-      document.getElementById('dashboard-link').href = getDashboardUrl(
-        userData.role
-      );
+      // Only show dashboard for non-user roles
+      if (userData.role && userData.role.toLowerCase() !== 'user') {
+        dashboardNav.style.display = 'block';
+        document.getElementById('dashboard-link').href = getDashboardUrl(
+          userData.role
+        );
+      } else {
+        dashboardNav.style.display = 'none';
+      }
     }
     if (logoutNav) logoutNav.style.display = 'block';
     if (loginNav) loginNav.style.display = 'none';
@@ -132,13 +147,18 @@ function checkAuth() {
     if (mobileUserInfo) {
       mobileUserInfo.style.display = 'block';
       document.getElementById('mobile-user-name').textContent =
-        userData.name || userData.email;
+        userData.userName || userData.email;
     }
     if (mobileDashboardItem) {
-      mobileDashboardItem.style.display = 'block';
-      document.getElementById('mobile-dashboard-link').href = getDashboardUrl(
-        userData.role
-      );
+      // Only show dashboard for non-user roles
+      if (userData.role && userData.role.toLowerCase() !== 'user') {
+        mobileDashboardItem.style.display = 'block';
+        document.getElementById('mobile-dashboard-link').href = getDashboardUrl(
+          userData.role
+        );
+      } else {
+        mobileDashboardItem.style.display = 'none';
+      }
     }
     if (mobileLogoutItem) mobileLogoutItem.style.display = 'block';
     if (mobileLoginItem) mobileLoginItem.style.display = 'none';
@@ -171,13 +191,6 @@ function getDashboardUrl(role) {
     default:
       return '/';
   }
-}
-
-// Function to handle logout
-function handleLogout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('userData');
-  window.location.href = '/';
 }
 
 // Function to handle fault reporting
