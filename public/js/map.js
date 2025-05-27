@@ -1,3 +1,6 @@
+// Import axios instance
+import axiosInstance from './axios-config.js';
+
 // Global variables
 let map;
 let userMarker;
@@ -68,7 +71,7 @@ window.initMap = function () {
 // Function to load BBQ locations from API
 async function loadBBQLocations(userLocation = null) {
   try {
-    const response = await axios.get('http://localhost:5000/api/bbqs');
+    const response = await axiosInstance.get('/bbqs');
     const bbqLocations = response.data;
 
     // Clear existing markers
@@ -299,47 +302,24 @@ function closeLoginPrompt() {
 
 // Function to submit fault report
 async function submitFault(locationName) {
-  const description = document.getElementById('faultDescription').value;
-  if (!description.trim()) {
-    M.toast({ html: 'Please enter a description', classes: 'red' });
-    return;
-  }
-
   try {
-    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    const token = localStorage.getItem('token');
-
-    if (!token || !userData) {
-      M.toast({ html: 'Please login to report faults', classes: 'red' });
-      closeFaultModal();
+    const description = document.getElementById('faultDescription').value;
+    if (!description) {
+      M.toast({ html: 'Please provide a description', classes: 'red' });
       return;
     }
 
-    const response = await axios.post(
-      'http://localhost:5000/api/faults',
-      {
-        bbqId: locationName, // Using locationName as bbqId
-        reporterName: userData.name || userData.email,
-        issue: description,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    M.toast({
-      html: 'Fault report submitted successfully',
-      classes: 'green',
+    await axiosInstance.post('/faults', {
+      locationName,
+      description,
     });
+
+    M.toast({ html: 'Fault reported successfully', classes: 'green' });
     closeFaultModal();
   } catch (error) {
-    console.error('Error submitting fault report:', error);
+    console.error('Error submitting fault:', error);
     M.toast({
-      html:
-        error.response?.data?.message ||
-        'Failed to submit fault report. Please try again.',
+      html: error.response?.data?.message || 'Error submitting fault report',
       classes: 'red',
     });
   }
