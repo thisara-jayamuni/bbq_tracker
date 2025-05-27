@@ -192,7 +192,7 @@ function createBBQMarker(bbq, userLocation) {
                 </button>
                 ${
                   isLoggedIn
-                    ? `<button onclick="reportFault('${bbq.name}')" 
+                    ? `<button onclick="reportFault('${bbq.id}', '${bbq.name}')" 
                         class="btn-small waves-effect waves-light red" 
                         style="flex: 1; height: 36px; line-height: 36px; padding: 0 16px; border-radius: 4px; text-transform: none; font-weight: 600; letter-spacing: -0.01em; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
                         <i class="material-icons left" style="margin-right: 4px;">report_problem</i>Report Fault
@@ -301,7 +301,7 @@ function closeLoginPrompt() {
 }
 
 // Function to submit fault report
-async function submitFault(locationName) {
+async function submitFault(bbqId, bbqName) {
   try {
     const description = document.getElementById('faultDescription').value;
     if (!description) {
@@ -309,9 +309,11 @@ async function submitFault(locationName) {
       return;
     }
 
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
     await axiosInstance.post('/faults', {
-      locationName,
-      description,
+      bbqId: bbqId,
+      reporterName: userData.userName || 'Anonymous',
+      issue: description,
     });
 
     M.toast({ html: 'Fault reported successfully', classes: 'green' });
@@ -326,18 +328,18 @@ async function submitFault(locationName) {
 }
 
 // Function to report fault
-function reportFault(locationName) {
+function reportFault(bbqId, bbqName) {
   const modalContent = `
         <div id="faultModal" class="modal" style="max-width: 500px;">
             <div class="modal-content" style="padding: 24px;">
-                <h5 style="color: #1976D2; margin-bottom: 20px;">Report Fault - ${locationName}</h5>
+                <h5 style="color: #1976D2; margin-bottom: 20px;">Report Fault - ${bbqName}</h5>
                 <div class="input-field">
                     <textarea id="faultDescription" class="materialize-textarea" 
                         style="min-height: 100px; border: 1px solid #ddd; padding: 10px; border-radius: 4px; margin-top: 10px;"
                         placeholder="Please describe the issue with this BBQ location..."></textarea>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button onclick="submitFault('${locationName}')" 
+                    <button onclick="submitFault('${bbqId}', '${bbqName}')" 
                         class="btn waves-effect waves-light blue" 
                         style="flex: 1; height: 40px; line-height: 40px; padding: 0 16px; border-radius: 4px; text-transform: none; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px;">
                         <i class="material-icons" style="font-size: 18px;">send</i>
