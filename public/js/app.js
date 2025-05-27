@@ -1,5 +1,6 @@
-// Import axios instance
+// Import axios instance and services
 import axiosInstance from './axios-config.js';
+import { authService } from './services/api.js';
 
 // Make handleLogout function globally available
 window.handleLogout = function () {
@@ -173,14 +174,11 @@ document.addEventListener('DOMContentLoaded', function () {
 // Function to handle login
 async function handleLogin(email, password) {
   try {
-    const response = await axiosInstance.post('/auth/login', {
-      email,
-      password,
-    });
+    const response = await authService.login(email, password);
 
     // Store token and user data
-    localStorage.setItem('token', response.data.token);
-    localStorage.setItem('userData', JSON.stringify(response.data.userData));
+    localStorage.setItem('token', response.token);
+    localStorage.setItem('userData', JSON.stringify(response.userData));
 
     // Show success message
     M.toast({
@@ -189,7 +187,7 @@ async function handleLogin(email, password) {
     });
 
     // Redirect based on role
-    const role = response.data.userData.role;
+    const role = response.userData.role;
     window.location.href = getDashboardUrl(role);
   } catch (error) {
     console.error('Login error:', error);
