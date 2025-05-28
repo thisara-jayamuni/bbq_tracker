@@ -10,6 +10,15 @@ const authMiddleware = async (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
 
+  if (token === process.env.ADMIN_API_KEY) {
+    req.user = {
+      id: 'internal',
+      role: 'InternalService',
+      isInternal: true
+    };
+    return next();
+  }
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.userId).select('-password');
@@ -19,9 +28,10 @@ const authMiddleware = async (req, res, next) => {
     }
 
     req.user = user;
+    req.token = token;
     next();
   } catch (err) {
-    return res.status(403).json({ error: 'Invalid or expired token' });
+    return res.status(401).json({ error: 'Invalid or expired token' });
   }
 };
 
