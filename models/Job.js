@@ -16,6 +16,10 @@ const JobSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  workedBy:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   jobHistory: [{
     action: {
       type: String,

@@ -34,7 +34,26 @@ const getFaultReports = async (req, res) => {
   }
 };
 
+const updateFaultreport = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    const updateData = req.body;
+
+    const updated = await FaultReport.findByIdAndUpdate(id, { status }, { new: true });
+
+    if (!updated) {
+      return res.status(404).json({ error: "Fault report not found" });
+    }
+
+    return res.status(200).json(updated);
+  } catch (error) {
+    console.error("Error updating fault report:", error);
+    res.status(500).json({ error: "Server error updating fault report" });
+  }
+};
+
 module.exports = {
   createFaultReport,
-  getFaultReports
+  getFaultReports,
+  updateFaultreport,
 };
