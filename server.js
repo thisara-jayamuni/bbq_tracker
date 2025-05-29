@@ -19,14 +19,15 @@ const bbqRoutes = require('./routes/BBQ.routes');
 const faultRoutes = require('./routes/faultReport.routes');
 const authRoutes = require('./routes/auth.routes');
 const jobRoutes = require('./routes/jobs.routes');
+const readingRoutes = require('./routes/reading.routes');
 
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-// app.use("/api/devices", deviceRoutes); todo: fix device routes
 app.use('/api/bbqs', bbqRoutes);
 app.use('/api/faults', faultRoutes);
-app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
-
+app.use('/api/devices', deviceRoutes); 
+app.use('/api/read', readingRoutes);
 // Connect to MongoDB
 mongoose
   .connect(config.mongoUri, {
