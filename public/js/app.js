@@ -75,6 +75,11 @@ document.addEventListener('DOMContentLoaded', function () {
       handleLogin(email, password);
     });
   }
+
+  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+if (userData.role === 'cleaner') {
+  fetchCleanerTasks();
+}
 });
 
 // Function to handle login
@@ -289,4 +294,78 @@ function getDirections(lat, lng) {
   } else {
     alert('Geolocation is not supported by your browser.');
   }
+}
+
+function fetchCleanerTasks() {
+  const token = localStorage.getItem('token');
+
+  fetch('/api/jobs/my-tasks', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      renderCleanerTasks(data.tasks);
+    })
+    .catch(err => {
+      console.error('Error fetching cleaner tasks:', err);
+      M.toast({ html: 'Failed to load tasks', classes: 'red' });
+    });
+}
+
+function renderCleanerTasks(tasks) {
+  const tbody = document.querySelector('#task-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  tasks.forEach(task => {
+    const actionText = task.status === 'Pending' ? 'Start'
+                     : task.status === 'In Progress' ? 'Complete'
+                     : 'Done';
+
+    const isClickable = task.status === 'Pending' || task.status === 'In Progress';
+    const actionCell = isClickable
+      ? `<a href="#!" class="btn-small" onclick="updateCleanerTask('${task._id}', '${task.status}')">${actionText}</a>`
+      : `<span class="grey-text">Done</span>`;
+
+    const row = `
+      <tr>
+        <td>#${task._id.slice(-4)}</td>
+        <td>${task.bbqName}</td>
+        <td>${formatTime(task.scheduledTime)}</td>
+        <td>${task.status}</td>
+        <td>${actionCell}</td>
+      </tr>
+    `;
+    tbody.innerHTML += row;
+  });
+}
+
+function updateCleanerTask(taskId, currentStatus) {
+  const token = localStorage.getItem('token');
+  const newStatus = currentStatus === 'Pending' ? 'In Progress' : 'Completed';
+
+  fetch(`/api/jobs/${taskId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ status: newStatus })
+  })
+    .then(res => res.json())
+    .then(data => {
+      M.toast({ html: data.message || 'Task updated', classes: 'green' });
+      setTimeout(fetchCleanerTasks, 500); // refresh list
+    })
+    .catch(err => {
+      console.error('Error updating task:', err);
+      M.toast({ html: 'Failed to update task', classes: 'red' });
+    });
+}
+
+function formatTime(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
