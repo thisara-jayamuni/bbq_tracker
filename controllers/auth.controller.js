@@ -32,6 +32,7 @@ const login = async (req, res) => {
 
     // Check password
     const isPasswordValid = await fullUser.comparePassword(password);
+    // console.log('Password comparison result:', password);
     console.log('Password valid:', isPasswordValid);
 
     if (!isPasswordValid) {
@@ -67,5 +68,5 @@ const login = async (req, res) => {
 };
 
 module.exports = {
-  login,
+  login
 };
