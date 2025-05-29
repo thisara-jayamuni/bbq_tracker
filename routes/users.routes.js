@@ -12,7 +12,7 @@ router.delete('/email/:email',auth, authorizeRoles('admin','InternalService'),us
 // router.get('/id/:id', usersController.getUserById);
 router.get('/id/:id', auth, authorizeRoles('admin','InternalService'),usersController.getUserById);
 router.put('/id/:id',  auth, authorizeRoles('admin','InternalService'),usersController.updateUserById);
-router.delete('/id/:id', auth, authorizeRoles('admin','InternalService'),usersController.deleteUserById);
+router.patch('/id/:id', auth, authorizeRoles('admin','InternalService'),usersController.deleteUserById);
 router.get('/role/:role', auth, authorizeRoles('admin','InternalService'),usersController.getUserByRole);
 
 module.exports = router;
