@@ -13,6 +13,6 @@ router.delete('/email/:email',auth, authorizeRoles('admin','InternalService'),us
 router.get('/id/:id', auth, authorizeRoles('admin','InternalService'),usersController.getUserById);
 router.put('/id/:id',  auth, authorizeRoles('admin','InternalService'),usersController.updateUserById);
 router.patch('/id/:id', auth, authorizeRoles('admin','InternalService'),usersController.deleteUserById);
-router.get('/role/:role', auth, authorizeRoles('admin','InternalService'),usersController.getUserByRole);
+router.get('/role/:role', auth, authorizeRoles('*','InternalService'),usersController.getUserByRole);
 
 module.exports = router;
