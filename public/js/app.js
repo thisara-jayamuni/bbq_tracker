@@ -1,11 +1,106 @@
-// Import axios instance
+// Import axios instance and services
 import axiosInstance from './axios-config.js';
+import { authService } from './services/api.js';
+import { ROLE_DISPLAY_NAMES } from './utils/constants.js';
 
 // Make handleLogout function globally available
 window.handleLogout = function () {
   localStorage.removeItem('token');
   localStorage.removeItem('userData');
   window.location.href = '/';
+};
+
+// Make fault reporting functions globally available
+window.reportFault = function (bbqId, bbqName) {
+  const modalContent = `
+        <div id="faultModal" class="modal" style="max-width: 500px;">
+            <div class="modal-content" style="padding: 24px;">
+                <h5 style="color: #1976D2; margin-bottom: 20px;">Report Fault - ${bbqName}</h5>
+                <div class="input-field">
+                    <textarea id="faultDescription" class="materialize-textarea" 
+                        style="min-height: 100px; border: 1px solid #ddd; padding: 10px; border-radius: 4px; margin-top: 10px;"
+                        placeholder="Please describe the issue with this BBQ..."></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button onclick="submitFault('${bbqId}')" 
+                        style="flex: 1; background: #1976D2; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 500;">
+                        <i class="material-icons" style="font-size: 18px;">send</i>
+                        Submit
+                    </button>
+                    <button onclick="closeFaultModal()" 
+                        style="flex: 1; background: #757575; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 500;">
+                        <i class="material-icons" style="font-size: 18px;">close</i>
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+  // Remove existing modal if any
+  const existingModal = document.getElementById('faultModal');
+  if (existingModal) {
+    existingModal.remove();
+  }
+
+  // Add new modal to body
+  document.body.insertAdjacentHTML('beforeend', modalContent);
+
+  // Initialize modal
+  const modal = document.getElementById('faultModal');
+  const instance = M.Modal.init(modal, {
+    dismissible: true,
+    opacity: 0.5,
+    inDuration: 300,
+    outDuration: 200,
+    startingTop: '4%',
+    endingTop: '10%',
+  });
+
+  // Open modal
+  instance.open();
+
+  // Initialize textarea
+  M.textareaAutoResize(document.getElementById('faultDescription'));
+};
+
+window.submitFault = async function (bbqId) {
+  const description = document.getElementById('faultDescription').value;
+  if (!description.trim()) {
+    M.toast({ html: 'Please enter a description', classes: 'red' });
+    return;
+  }
+
+  try {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    const response = await axiosInstance.post('/faults', {
+      bbqId: bbqId,
+      reporterName: userData.userName || 'Anonymous',
+      issue: description,
+    });
+
+    M.toast({ html: 'Fault report submitted successfully', classes: 'green' });
+    closeFaultModal();
+  } catch (error) {
+    console.error('Error submitting fault report:', error);
+    M.toast({
+      html:
+        error.response?.data?.message ||
+        'Failed to submit fault report. Please try again.',
+      classes: 'red',
+    });
+  }
+};
+
+window.closeFaultModal = function () {
+  const modal = document.getElementById('faultModal');
+  if (modal) {
+    const instance = M.Modal.getInstance(modal);
+    if (instance) {
+      instance.close();
+    }
+    modal.remove();
+  }
 };
 
 // Load header and footer when DOM is ready
@@ -75,24 +170,16 @@ document.addEventListener('DOMContentLoaded', function () {
       handleLogin(email, password);
     });
   }
-
-  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-if (userData.role === 'cleaner') {
-  fetchCleanerTasks();
-}
 });
 
 // Function to handle login
 async function handleLogin(email, password) {
   try {
-    const response = await axiosInstance.post('/auth/login', {
-      email,
-      password,
-    });
+    const response = await authService.login(email, password);
 
     // Store token and user data
-    localStorage.setItem('token', response.data.token);
-    localStorage.setItem('userData', JSON.stringify(response.data.userData));
+    localStorage.setItem('token', response.token);
+    localStorage.setItem('userData', JSON.stringify(response.userData));
 
     // Show success message
     M.toast({
@@ -101,7 +188,7 @@ async function handleLogin(email, password) {
     });
 
     // Redirect based on role
-    const role = response.data.userData.role;
+    const role = response.userData.role;
     window.location.href = getDashboardUrl(role);
   } catch (error) {
     console.error('Login error:', error);
@@ -112,69 +199,67 @@ async function handleLogin(email, password) {
   }
 }
 
-// Function to check authentication status
-function checkAuth() {
+// Function to check authentication
+export function checkAuth() {
   const token = localStorage.getItem('token');
   const userData = JSON.parse(localStorage.getItem('userData') || '{}');
 
-  // Update UI based on auth status
-  const userInfoNav = document.getElementById('user-info-nav-item');
-  const dashboardNav = document.getElementById('dashboard-nav-item');
-  const logoutNav = document.getElementById('logout-nav-item');
-  const loginNav = document.getElementById('login-nav-item');
+  // Get header elements
+  const userInfoNavItem = document.getElementById('user-info-nav-item');
+  const dashboardNavItem = document.getElementById('dashboard-nav-item');
+  const logoutNavItem = document.getElementById('logout-nav-item');
+  const loginNavItem = document.getElementById('login-nav-item');
   const mobileUserInfo = document.getElementById('mobile-user-info');
   const mobileDashboardItem = document.getElementById('mobile-dashboard-item');
   const mobileLogoutItem = document.getElementById('mobile-logout-item');
   const mobileLoginItem = document.getElementById('mobile-login-item');
 
   if (token && userData) {
-    // User is logged in
-    if (userInfoNav) {
-      userInfoNav.style.display = 'block';
-      document.getElementById('user-name').textContent =
-        userData.userName || userData.email;
-    }
-    if (dashboardNav) {
-      // Only show dashboard for non-user roles
-      if (userData.role && userData.role.toLowerCase() !== 'user') {
-        dashboardNav.style.display = 'block';
-        document.getElementById('dashboard-link').href = getDashboardUrl(
-          userData.role
-        );
-      } else {
-        dashboardNav.style.display = 'none';
-      }
-    }
-    if (logoutNav) logoutNav.style.display = 'block';
-    if (loginNav) loginNav.style.display = 'none';
-
-    // Mobile navigation
-    if (mobileUserInfo) {
-      mobileUserInfo.style.display = 'block';
-      document.getElementById('mobile-user-name').textContent =
-        userData.userName || userData.email;
-    }
-    if (mobileDashboardItem) {
-      // Only show dashboard for non-user roles
-      if (userData.role && userData.role.toLowerCase() !== 'user') {
-        mobileDashboardItem.style.display = 'block';
-        document.getElementById('mobile-dashboard-link').href = getDashboardUrl(
-          userData.role
-        );
-      } else {
-        mobileDashboardItem.style.display = 'none';
-      }
-    }
+    // Show user info and dashboard button
+    if (userInfoNavItem) userInfoNavItem.style.display = 'block';
+    if (dashboardNavItem) dashboardNavItem.style.display = 'block';
+    if (logoutNavItem) logoutNavItem.style.display = 'block';
+    if (loginNavItem) loginNavItem.style.display = 'none';
+    if (mobileUserInfo) mobileUserInfo.style.display = 'block';
+    if (mobileDashboardItem) mobileDashboardItem.style.display = 'block';
     if (mobileLogoutItem) mobileLogoutItem.style.display = 'block';
     if (mobileLoginItem) mobileLoginItem.style.display = 'none';
-  } else {
-    // User is not logged in
-    if (userInfoNav) userInfoNav.style.display = 'none';
-    if (dashboardNav) dashboardNav.style.display = 'none';
-    if (logoutNav) logoutNav.style.display = 'none';
-    if (loginNav) loginNav.style.display = 'block';
 
-    // Mobile navigation
+    // Set user name and role
+    const userName = document.getElementById('user-name');
+    const userRole = document.getElementById('user-role');
+    const mobileUserName = document.getElementById('mobile-user-name');
+    const mobileUserRole = document.getElementById('mobile-user-role');
+
+    if (userName) userName.textContent = userData.userName;
+    if (userRole)
+      userRole.textContent = ROLE_DISPLAY_NAMES[userData.role] || userData.role;
+    if (mobileUserName) mobileUserName.textContent = userData.userName;
+    if (mobileUserRole)
+      mobileUserRole.textContent =
+        ROLE_DISPLAY_NAMES[userData.role] || userData.role;
+
+    // Set dashboard link based on role
+    const dashboardLink = document.getElementById('dashboard-link');
+    const mobileDashboardLink = document.getElementById(
+      'mobile-dashboard-link'
+    );
+    const dashboardUrl = getDashboardUrl(userData.role);
+
+    if (dashboardLink) dashboardLink.href = dashboardUrl;
+    if (mobileDashboardLink) mobileDashboardLink.href = dashboardUrl;
+
+    // Hide dashboard button for regular users
+    if (userData.role === 'user') {
+      if (dashboardNavItem) dashboardNavItem.style.display = 'none';
+      if (mobileDashboardItem) mobileDashboardItem.style.display = 'none';
+    }
+  } else {
+    // Hide user info and dashboard button
+    if (userInfoNavItem) userInfoNavItem.style.display = 'none';
+    if (dashboardNavItem) dashboardNavItem.style.display = 'none';
+    if (logoutNavItem) logoutNavItem.style.display = 'none';
+    if (loginNavItem) loginNavItem.style.display = 'block';
     if (mobileUserInfo) mobileUserInfo.style.display = 'none';
     if (mobileDashboardItem) mobileDashboardItem.style.display = 'none';
     if (mobileLogoutItem) mobileLogoutItem.style.display = 'none';
@@ -198,85 +283,6 @@ function getDashboardUrl(role) {
   }
 }
 
-// Function to handle fault reporting
-function reportFault(locationName) {
-  const modalContent = `
-        <div id="faultModal" class="modal" style="max-width: 500px;">
-            <div class="modal-content" style="padding: 24px;">
-                <h5 style="color: #1976D2; margin-bottom: 20px;">Report Fault - ${locationName}</h5>
-                <div class="input-field">
-                    <textarea id="faultDescription" class="materialize-textarea" 
-                        style="min-height: 100px; border: 1px solid #ddd; padding: 10px; border-radius: 4px; margin-top: 10px;"
-                        placeholder="Please describe the issue with this BBQ location..."></textarea>
-                </div>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button onclick="submitFault('${locationName}')" 
-                        style="flex: 1; background: #1976D2; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 500;">
-                        <i class="material-icons" style="font-size: 18px;">send</i>
-                        Submit
-                    </button>
-                    <button onclick="closeFaultModal()" 
-                        style="flex: 1; background: #757575; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 500;">
-                        <i class="material-icons" style="font-size: 18px;">close</i>
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-
-  // Remove existing modal if any
-  const existingModal = document.getElementById('faultModal');
-  if (existingModal) {
-    existingModal.remove();
-  }
-
-  // Add new modal to body
-  document.body.insertAdjacentHTML('beforeend', modalContent);
-
-  // Initialize modal
-  const modal = document.getElementById('faultModal');
-  const instance = M.Modal.init(modal, {
-    dismissible: true,
-    opacity: 0.5,
-    inDuration: 300,
-    outDuration: 200,
-    startingTop: '4%',
-    endingTop: '10%',
-  });
-
-  // Open modal
-  instance.open();
-
-  // Initialize textarea
-  M.textareaAutoResize(document.getElementById('faultDescription'));
-}
-
-// Function to submit fault report
-function submitFault(locationName) {
-  const description = document.getElementById('faultDescription').value;
-  if (!description.trim()) {
-    M.toast({ html: 'Please enter a description', classes: 'red' });
-    return;
-  }
-
-  // TODO: Send fault report to backend
-  M.toast({ html: 'Fault report submitted successfully', classes: 'green' });
-  closeFaultModal();
-}
-
-// Function to close fault modal
-function closeFaultModal() {
-  const modal = document.getElementById('faultModal');
-  if (modal) {
-    const instance = M.Modal.getInstance(modal);
-    if (instance) {
-      instance.close();
-    }
-    modal.remove();
-  }
-}
-
 // Function to get directions
 function getDirections(lat, lng) {
   if (navigator.geolocation) {
@@ -294,78 +300,4 @@ function getDirections(lat, lng) {
   } else {
     alert('Geolocation is not supported by your browser.');
   }
-}
-
-function fetchCleanerTasks() {
-  const token = localStorage.getItem('token');
-
-  fetch('/api/jobs/my-tasks', {
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  })
-    .then(res => res.json())
-    .then(data => {
-      renderCleanerTasks(data.tasks);
-    })
-    .catch(err => {
-      console.error('Error fetching cleaner tasks:', err);
-      M.toast({ html: 'Failed to load tasks', classes: 'red' });
-    });
-}
-
-function renderCleanerTasks(tasks) {
-  const tbody = document.querySelector('#task-table-body');
-  if (!tbody) return;
-  tbody.innerHTML = '';
-
-  tasks.forEach(task => {
-    const actionText = task.status === 'Pending' ? 'Start'
-                     : task.status === 'In Progress' ? 'Complete'
-                     : 'Done';
-
-    const isClickable = task.status === 'Pending' || task.status === 'In Progress';
-    const actionCell = isClickable
-      ? `<a href="#!" class="btn-small" onclick="updateCleanerTask('${task._id}', '${task.status}')">${actionText}</a>`
-      : `<span class="grey-text">Done</span>`;
-
-    const row = `
-      <tr>
-        <td>#${task._id.slice(-4)}</td>
-        <td>${task.bbqName}</td>
-        <td>${formatTime(task.scheduledTime)}</td>
-        <td>${task.status}</td>
-        <td>${actionCell}</td>
-      </tr>
-    `;
-    tbody.innerHTML += row;
-  });
-}
-
-function updateCleanerTask(taskId, currentStatus) {
-  const token = localStorage.getItem('token');
-  const newStatus = currentStatus === 'Pending' ? 'In Progress' : 'Completed';
-
-  fetch(`/api/jobs/${taskId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({ status: newStatus })
-  })
-    .then(res => res.json())
-    .then(data => {
-      M.toast({ html: data.message || 'Task updated', classes: 'green' });
-      setTimeout(fetchCleanerTasks, 500); // refresh list
-    })
-    .catch(err => {
-      console.error('Error updating task:', err);
-      M.toast({ html: 'Failed to update task', classes: 'red' });
-    });
-}
-
-function formatTime(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }

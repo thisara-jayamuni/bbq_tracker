@@ -1,5 +1,8 @@
-// Import axios instance
+// Import dependencies
 import axiosInstance from './axios-config.js';
+import { bbqService } from './services/api.js';
+import { calculateDistance, isLoggedIn, showToast } from './utils/helpers.js';
+import { showFaultReportModal, showLoginPrompt } from './components/modals.js';
 
 // Global variables
 let map;
@@ -71,8 +74,7 @@ window.initMap = function () {
 // Function to load BBQ locations from API
 async function loadBBQLocations(userLocation = null) {
   try {
-    const response = await axiosInstance.get('/bbqs');
-    const bbqLocations = response.data;
+    const bbqLocations = await bbqService.getAllBBQs();
 
     // Clear existing markers
     bbqMarkers.forEach((marker) => marker.setMap(null));
@@ -85,10 +87,10 @@ async function loadBBQLocations(userLocation = null) {
     });
   } catch (error) {
     console.error('Error loading BBQ locations:', error);
-    M.toast({
-      html: error.response?.data?.message || 'Error loading BBQ locations',
-      classes: 'red',
-    });
+    showToast(
+      error.response?.data?.message || 'Error loading BBQ locations',
+      'red'
+    );
   }
 }
 
@@ -124,11 +126,6 @@ function createBBQMarker(bbq, userLocation) {
     },
     title: bbq.name,
   });
-
-  // Check if user is logged in
-  const token = localStorage.getItem('token');
-  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-  const isLoggedIn = token && userData;
 
   // Create info window content
   const content = `
@@ -191,8 +188,8 @@ function createBBQMarker(bbq, userLocation) {
                     <i class="material-icons left" style="margin-right: 4px;">directions</i>Get Directions
                 </button>
                 ${
-                  isLoggedIn
-                    ? `<button onclick="reportFault('${bbq.name}')" 
+                  isLoggedIn()
+                    ? `<button onclick="showFaultReportModal('${bbq.id}', '${bbq.name}')" 
                         class="btn-small waves-effect waves-light red" 
                         style="flex: 1; height: 36px; line-height: 36px; padding: 0 16px; border-radius: 4px; text-transform: none; font-weight: 600; letter-spacing: -0.01em; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
                         <i class="material-icons left" style="margin-right: 4px;">report_problem</i>Report Fault
@@ -222,173 +219,21 @@ function createBBQMarker(bbq, userLocation) {
   return marker;
 }
 
-// Function to calculate distance between two points in kilometers
-function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Radius of the earth in km
-  const dLat = deg2rad(lat2 - lat1);
-  const dLon = deg2rad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(deg2rad(lat1)) *
-      Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c; // Distance in km
-}
-
-function deg2rad(deg) {
-  return deg * (Math.PI / 180);
-}
-
-// Function to show login prompt
-function showLoginPrompt() {
-  const modalContent = `
-    <div id="loginPromptModal" class="modal" style="max-width: 400px;">
-      <div class="modal-content" style="padding: 24px;">
-        <h5 style="color: #1976D2; margin-bottom: 20px;">Login Required</h5>
-        <p style="margin-bottom: 20px;">Please login to report faults with BBQ locations.</p>
-        <div style="display: flex; gap: 10px;">
-          <button onclick="window.location.href='/login.html'" 
-            class="btn waves-effect waves-light blue" 
-            style="flex: 1; height: 40px; line-height: 40px; padding: 0 16px; border-radius: 4px; text-transform: none; font-weight: 600;">
-            <i class="material-icons left">login</i>Login
-          </button>
-          <button onclick="closeLoginPrompt()" 
-            class="btn waves-effect waves-light grey" 
-            style="flex: 1; height: 40px; line-height: 40px; padding: 0 16px; border-radius: 4px; text-transform: none; font-weight: 600;">
-            <i class="material-icons left">close</i>Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
-
-  // Remove existing modal if any
-  const existingModal = document.getElementById('loginPromptModal');
-  if (existingModal) {
-    existingModal.remove();
+// Function to get directions
+window.getDirections = function (lat, lng) {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+        const directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${lat},${lng}&travelmode=driving`;
+        window.open(directionsUrl, '_blank');
+      },
+      () => {
+        showToast('Please enable location access to get directions.', 'red');
+      }
+    );
+  } else {
+    showToast('Geolocation is not supported by your browser.', 'red');
   }
-
-  // Add new modal to body
-  document.body.insertAdjacentHTML('beforeend', modalContent);
-
-  // Initialize modal
-  const modal = document.getElementById('loginPromptModal');
-  const instance = M.Modal.init(modal, {
-    dismissible: true,
-    opacity: 0.5,
-    inDuration: 300,
-    outDuration: 200,
-    startingTop: '4%',
-    endingTop: '10%',
-  });
-
-  // Open modal
-  instance.open();
-}
-
-// Function to close login prompt
-function closeLoginPrompt() {
-  const modal = document.getElementById('loginPromptModal');
-  if (modal) {
-    const instance = M.Modal.getInstance(modal);
-    if (instance) {
-      instance.close();
-    }
-    modal.remove();
-  }
-}
-
-// Function to submit fault report
-async function submitFault(locationName) {
-  try {
-    const description = document.getElementById('faultDescription').value;
-    if (!description) {
-      M.toast({ html: 'Please provide a description', classes: 'red' });
-      return;
-    }
-
-    await axiosInstance.post('/faults', {
-      locationName,
-      description,
-    });
-
-    M.toast({ html: 'Fault reported successfully', classes: 'green' });
-    closeFaultModal();
-  } catch (error) {
-    console.error('Error submitting fault:', error);
-    M.toast({
-      html: error.response?.data?.message || 'Error submitting fault report',
-      classes: 'red',
-    });
-  }
-}
-
-// Function to report fault
-function reportFault(locationName) {
-  const modalContent = `
-        <div id="faultModal" class="modal" style="max-width: 500px;">
-            <div class="modal-content" style="padding: 24px;">
-                <h5 style="color: #1976D2; margin-bottom: 20px;">Report Fault - ${locationName}</h5>
-                <div class="input-field">
-                    <textarea id="faultDescription" class="materialize-textarea" 
-                        style="min-height: 100px; border: 1px solid #ddd; padding: 10px; border-radius: 4px; margin-top: 10px;"
-                        placeholder="Please describe the issue with this BBQ location..."></textarea>
-                </div>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button onclick="submitFault('${locationName}')" 
-                        class="btn waves-effect waves-light blue" 
-                        style="flex: 1; height: 40px; line-height: 40px; padding: 0 16px; border-radius: 4px; text-transform: none; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                        <i class="material-icons" style="font-size: 18px;">send</i>
-                        Submit Report
-                    </button>
-                    <button onclick="closeFaultModal()" 
-                        class="btn waves-effect waves-light grey" 
-                        style="flex: 1; height: 40px; line-height: 40px; padding: 0 16px; border-radius: 4px; text-transform: none; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                        <i class="material-icons" style="font-size: 18px;">close</i>
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-
-  // Remove existing modal if any
-  const existingModal = document.getElementById('faultModal');
-  if (existingModal) {
-    existingModal.remove();
-  }
-
-  // Add new modal to body
-  document.body.insertAdjacentHTML('beforeend', modalContent);
-
-  // Initialize modal
-  const modal = document.getElementById('faultModal');
-  const instance = M.Modal.init(modal, {
-    dismissible: true,
-    opacity: 0.5,
-    inDuration: 300,
-    outDuration: 200,
-    startingTop: '4%',
-    endingTop: '10%',
-  });
-
-  // Open modal
-  instance.open();
-
-  // Initialize textarea
-  M.textareaAutoResize(document.getElementById('faultDescription'));
-}
-
-// Function to close fault modal
-function closeFaultModal() {
-  const modal = document.getElementById('faultModal');
-  if (modal) {
-    const instance = M.Modal.getInstance(modal);
-    if (instance) {
-      instance.close();
-    }
-    modal.remove();
-  }
-}
+};
