@@ -41,6 +41,32 @@ const getMyTasks = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch tasks' });
   }
 };
+const assignToCleaner = async (req, res) => {
+  try {
+    const { jobId, cleanerId } = req.body;
+
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(404).json({ message: 'Job not found' });
+    }
+
+    job.assignedTo = cleanerId;
+    job.status = 'Assigned';
+
+    job.jobHistory.push({
+      action: 'Assigned to cleaner',
+      performedBy: req.user._id, 
+    });
+
+    await job.save();
+
+    res.status(200).json({ message: 'Job assigned to cleaner', job });
+  } catch (error) {
+    console.error('Error assigning job:', error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 const updateJobStatus = async (req, res) => {
   try {
@@ -89,5 +115,6 @@ module.exports = {
   createJob,
   getJobs,
   getMyTasks,
-  updateJobStatus
+  updateJobStatus,
+  assignToCleaner
 };
