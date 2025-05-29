@@ -1,8 +1,14 @@
 // middleware/role.middleware.js
 const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
-    if (!req.user || !allowedRoles.includes(req.user.role) || allowedRoles != '*') {
-      return res.status(403).json({ message: 'Access denied. Insufficient permissions.' });
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthenticated.' });
+    }
+
+    // Allow all roles if wildcard '*' is passed
+    if (allowedRoles.includes('*') || allowedRoles.includes(req.user.role)) {
+    // console.log(`User role ${req.user.role} is authorized.`);
+      return next();
     }
     next();
   };
