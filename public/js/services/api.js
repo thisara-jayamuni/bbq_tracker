@@ -106,8 +106,10 @@ export const userService = {
   },
 
   // Delete user
-  deleteUser: async (userId) => {
-    const response = await axiosInstance.delete(`/users/${userId}`);
+  deleteUser: async (userId, status) => {
+    const response = await axiosInstance.patch(`/users/id/${userId}`, {
+      status,
+    });
     return response.data;
   },
 };
