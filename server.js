@@ -16,11 +16,18 @@ app.use(express.json());
 const userRoutes = require('./routes/users.routes');
 const deviceRoutes = require('./routes/device.routes');
 const bbqRoutes = require('./routes/BBQ.routes');
-// Add more as needed
-app.use('/api/users', userRoutes);
-// app.use("/api/devices", deviceRoutes);
-app.use('/api/bbqs', bbqRoutes);
+const faultRoutes = require('./routes/faultReport.routes');
+const authRoutes = require('./routes/auth.routes');
+const jobRoutes = require('./routes/jobs.routes');
+const readingRoutes = require('./routes/reading.routes');
 
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/bbqs', bbqRoutes);
+app.use('/api/faults', faultRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/devices', deviceRoutes); 
+app.use('/api/read', readingRoutes);
 // Connect to MongoDB
 mongoose
   .connect(config.mongoUri, {

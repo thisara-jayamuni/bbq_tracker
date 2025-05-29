@@ -1,26 +1,28 @@
 const mongoose = require("mongoose");
-const config = require("./config/config");
+const config = require("../config/config"); // Adjust path as needed
 
 // Import models
 const BBQ = require("./models/BBQ");
 const Device = require("./models/Device");
 const Reading = require("./models/Reading");
 const StatusLog = require("./models/StatusLog");
+const User = require("./models/User"); 
 
 async function seed() {
   try {
     console.log("Connecting to MongoDB Atlas...");
     await mongoose.connect(config.mongoUri);
 
-    console.log("✅ Connected. Clearing old data...");
+    console.log("Connected. Clearing old data...");
     await Promise.all([
       BBQ.deleteMany({}),
       Device.deleteMany({}),
       Reading.deleteMany({}),
-      StatusLog.deleteMany({})
+      StatusLog.deleteMany({}),
+      User.deleteMany({})
     ]);
 
-    console.log("🌱 Seeding collections...");
+    console.log("Seeding collections...");
 
     const bbqs = await BBQ.insertMany([
       {
@@ -93,6 +95,24 @@ async function seed() {
         oldStatus: "dirty",
         newStatus: "out_of_order",
         source: "manual"
+      }
+    ]);
+
+        await User.create([
+      {
+        email: "admin@example.com",
+        password: "Admin123!", 
+        role: "admin"
+      },
+      {
+        email: "cleaner@example.com",
+        password: "Cleaner123!",
+        role: "cleaner"
+      },
+      {
+        email: "user@example.com",
+        password: "User123!",
+        role: "user"
       }
     ]);
 

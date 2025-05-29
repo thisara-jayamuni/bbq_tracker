@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cleaner Dashboard - VIC BBQ Tracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/css/variables.css" rel="stylesheet">
+    <link href="/css/components.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header will be loaded here -->
+    <div id="header-placeholder"></div>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <h4>Cleaner Dashboard</h4>
+                </div>
+            </div>
+
+            <!-- Today's Tasks Section -->
+            <div class="row">
+                <div class="col s12 m6">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">Today's Tasks</span>
+                            <div class="collection">
+                                <a href="#!" class="collection-item">View Schedule</a>
+                                <a href="#!" class="collection-item">Mark Task Complete</a>
+                                <a href="#!" class="collection-item">Report Issues</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Section -->
+                <div class="col s12 m6">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">Quick Actions</span>
+                            <div class="collection">
+                                <a href="#!" class="collection-item">Start Cleaning</a>
+                                <a href="#!" class="collection-item">Request Supplies</a>
+                                <a href="#!" class="collection-item">View Instructions</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Tasks Section -->
+            <div class="row">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">My Tasks</span>
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th>Task ID</th>
+                                        <th>Location</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#1234</td>
+                                        <td>Albert Park</td>
+                                        <td>09:00 AM</td>
+                                        <td>In Progress</td>
+                                        <td><a href="#!" class="btn-small">Complete</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>#1235</td>
+                                        <td>Fitzroy Gardens</td>
+                                        <td>11:00 AM</td>
+                                        <td>Pending</td>
+                                        <td><a href="#!" class="btn-small">Start</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div class="row">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <table  >
+                            <thead>
+                                <tr>
+                                    <th>Task ID</th>
+                                    <th>Location</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="task-table-body"></tbody>
+
+                        </table>
+
+                        </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded here -->
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        // Load header and footer
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                // Initialize sidenav after header is loaded
+                var elems = document.querySelectorAll('.sidenav');
+                var instances = M.Sidenav.init(elems);
+            });
+
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+</body>
+
+</html>
