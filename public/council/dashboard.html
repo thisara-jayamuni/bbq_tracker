@@ -10,6 +10,93 @@
     <link href="/css/variables.css" rel="stylesheet">
     <link href="/css/components.css" rel="stylesheet">
     <link href="/style.css" rel="stylesheet">
+    <style>
+        /* Tab Styling */
+        .tabs {
+            background-color: #fff;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .tabs .tab {
+            text-transform: none;
+        }
+
+        .tabs .tab a {
+            color: rgba(0, 0, 0, 0.7) !important;
+            font-weight: 500;
+            padding: 0 24px;
+            height: 48px;
+            line-height: 48px;
+            transition: all 0.3s ease;
+        }
+
+        .tabs .tab a:hover {
+            background-color: rgba(0, 0, 0, 0.05) !important;
+            color: #26a69a !important;
+        }
+
+        .tabs .tab a.active {
+            background-color: #26a69a !important;
+            color: white !important;
+        }
+
+        .tabs .indicator {
+            display: none !important;
+        }
+
+        .tabs .tab a i {
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .tabs .tab a i.material-icons {
+            font-size: 20px;
+            line-height: 48px;
+        }
+
+        /* Cleanliness Status Styling */
+        .cleanliness-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .cleanliness-clean {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .cleanliness-dirty {
+            background-color: #FFC107;
+            color: black;
+        }
+
+        .cleanliness-very-dirty {
+            background-color: #F44336;
+            color: white;
+        }
+
+        /* Last Cleaned Warning Styling */
+        .last-cleaned-time {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-icon {
+            color: #FFC107;
+            font-size: 1.2em;
+        }
+
+        .check-icon {
+            color: #4CAF50;
+            font-size: 1.2em;
+        }
+    </style>
 </head>
 
 <body>
@@ -24,214 +111,209 @@
                 </div>
             </div>
 
-            <!-- BBQ Locations Management Section -->
+            <!-- Tab Navigation -->
             <div class="row">
                 <div class="col s12">
-                    <div class="card">
-                        <div class="card-content">
-                            <div class="row" style="margin-bottom: 0;">
-                                <div class="col s6">
-                                    <span class="card-title">BBQ Locations Management</span>
-                                </div>
-                                <div class="col s6" style="text-align: right;">
-                                    <a href="#createBBQModal"
-                                        class="btn-floating btn-small waves-effect waves-light modal-trigger">
-                                        <i class="material-icons">add</i>
-                                    </a>
-                                </div>
+                    <ul class="tabs tabs-fixed-width">
+                        <li class="tab col s6">
+                            <a class="active waves-effect" href="#bbq-locations">
+                                <i class="material-icons">outdoor_grill</i>
+                                BBQ Locations
+                            </a>
+                        </li>
+                        <li class="tab col s6">
+                            <a class="waves-effect" href="#issues">
+                                <i class="material-icons">warning</i>
+                                Issues Management
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- BBQ Locations Tab -->
+            <div id="bbq-locations" class="col s12">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row" style="margin-bottom: 0;">
+                            <div class="col s6">
+                                <span class="card-title">BBQ Locations Management</span>
                             </div>
-                            <table class="striped">
-                                <thead>
-                                    <tr>
-                                        <th>Location ID</th>
-                                        <th>Location Name</th>
-                                        <th>Address</th>
-                                        <th>Assigned Supervisor</th>
-                                        <th>Status</th>
-                                        <th>Last Maintenance</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>#BBQ001</td>
-                                        <td>Albert Park</td>
-                                        <td>123 Albert Park Rd</td>
-                                        <td>John Smith</td>
-                                        <td>Operational</td>
-                                        <td>2024-03-15</td>
-                                        <td>
-                                            <a href="#editBBQModal" class="btn-small modal-trigger">Edit</a>
-                                            <a href="#!" class="btn-small">Assign Supervisor</a>
-                                            <a href="#!" class="btn-small">View Details</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>#BBQ002</td>
-                                        <td>Fitzroy Gardens</td>
-                                        <td>456 Fitzroy St</td>
-                                        <td>Sarah Johnson</td>
-                                        <td>Maintenance Required</td>
-                                        <td>2024-03-10</td>
-                                        <td>
-                                            <a href="#editBBQModal" class="btn-small modal-trigger">Edit</a>
-                                            <a href="#!" class="btn-small">Assign Supervisor</a>
-                                            <a href="#!" class="btn-small">View Details</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="col s6" style="text-align: right;">
+                                <a href="#createBBQModal"
+                                    class="btn-floating btn-small waves-effect waves-light modal-trigger">
+                                    <i class="material-icons">add</i>
+                                </a>
+                            </div>
                         </div>
+                        <table id="bbq-table" class="striped">
+                            <thead>
+                                <tr>
+                                    <th>Location ID</th>
+                                    <th>Location Name</th>
+                                    <th>Coordinates</th>
+                                    <th>Status</th>
+                                    <th>Cleanliness</th>
+                                    <th>Last Cleaned</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be loaded dynamically -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Create BBQ Location Modal -->
-            <div id="createBBQModal" class="modal">
-                <div class="modal-content">
-                    <h4>Add New BBQ Location</h4>
-                    <form id="createBBQForm">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input id="locationName" type="text" required>
-                                <label for="locationName">Location Name</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input id="address" type="text" required>
-                                <label for="address">Address</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <select id="supervisor" required>
-                                    <option value="" disabled selected>Choose a supervisor</option>
-                                    <option value="1">John Smith</option>
-                                    <option value="2">Sarah Johnson</option>
-                                    <option value="3">Mike Brown</option>
-                                </select>
-                                <label>Assigned Supervisor</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <select id="status" required>
-                                    <option value="" disabled selected>Choose status</option>
-                                    <option value="operational">Operational</option>
-                                    <option value="maintenance">Maintenance Required</option>
-                                    <option value="out_of_order">Out of Order</option>
-                                </select>
-                                <label>Status</label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
-                    <a href="#!" class="waves-effect waves-green btn-flat" onclick="submitCreateBBQ()">Create</a>
-                </div>
-            </div>
-
-            <!-- Edit BBQ Location Modal -->
-            <div id="editBBQModal" class="modal">
-                <div class="modal-content">
-                    <h4>Edit BBQ Location</h4>
-                    <form id="editBBQForm">
-                        <input type="hidden" id="editLocationId">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input id="editLocationName" type="text" required>
-                                <label for="editLocationName">Location Name</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input id="editAddress" type="text" required>
-                                <label for="editAddress">Address</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <select id="editSupervisor" required>
-                                    <option value="" disabled>Choose a supervisor</option>
-                                    <option value="1">John Smith</option>
-                                    <option value="2">Sarah Johnson</option>
-                                    <option value="3">Mike Brown</option>
-                                </select>
-                                <label>Assigned Supervisor</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <select id="editStatus" required>
-                                    <option value="" disabled>Choose status</option>
-                                    <option value="operational">Operational</option>
-                                    <option value="maintenance">Maintenance Required</option>
-                                    <option value="out_of_order">Out of Order</option>
-                                </select>
-                                <label>Status</label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
-                    <a href="#!" class="waves-effect waves-green btn-flat" onclick="submitEditBBQ()">Save Changes</a>
-                </div>
-            </div>
-
-            <!-- Issues Management Section -->
-            <div class="row">
-                <div class="col s12">
-                    <div class="card">
-                        <div class="card-content">
-                            <span class="card-title">Issues Management</span>
-                            <table class="striped">
-                                <thead>
-                                    <tr>
-                                        <th>Issue ID</th>
-                                        <th>Location</th>
-                                        <th>Reported By</th>
-                                        <th>Issue Type</th>
-                                        <th>Assigned Supervisor</th>
-                                        <th>Status</th>
-                                        <th>Reported Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>#ISS001</td>
-                                        <td>Albert Park</td>
-                                        <td>Public User</td>
-                                        <td>Gas Leak</td>
-                                        <td>Unassigned</td>
-                                        <td>Open</td>
-                                        <td>2024-03-20</td>
-                                        <td>
-                                            <a href="#!" class="btn-small">Assign Supervisor</a>
-                                            <a href="#!" class="btn-small">View Details</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>#ISS002</td>
-                                        <td>Fitzroy Gardens</td>
-                                        <td>Public User</td>
-                                        <td>Cleaning Required</td>
-                                        <td>Sarah Johnson</td>
-                                        <td>In Progress</td>
-                                        <td>2024-03-19</td>
-                                        <td>
-                                            <a href="#!" class="btn-small">Reassign</a>
-                                            <a href="#!" class="btn-small">View Details</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+            <!-- Issues Management Tab -->
+            <div id="issues" class="col s12">
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">Issues Management</span>
+                        <table class="striped">
+                            <thead>
+                                <tr>
+                                    <th>Issue ID</th>
+                                    <th>Location</th>
+                                    <th>Reported By</th>
+                                    <th>Issue Type</th>
+                                    <th>Assigned Supervisor</th>
+                                    <th>Status</th>
+                                    <th>Reported Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#ISS001</td>
+                                    <td>Albert Park</td>
+                                    <td>Public User</td>
+                                    <td>Gas Leak</td>
+                                    <td>Unassigned</td>
+                                    <td>Open</td>
+                                    <td>2024-03-20</td>
+                                    <td>
+                                        <a href="#!" class="btn-small">Assign Supervisor</a>
+                                        <a href="#!" class="btn-small">View Details</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#ISS002</td>
+                                    <td>Fitzroy Gardens</td>
+                                    <td>Public User</td>
+                                    <td>Cleaning Required</td>
+                                    <td>Sarah Johnson</td>
+                                    <td>In Progress</td>
+                                    <td>2024-03-19</td>
+                                    <td>
+                                        <a href="#!" class="btn-small">Reassign</a>
+                                        <a href="#!" class="btn-small">View Details</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Create BBQ Location Modal -->
+        <div id="createBBQModal" class="modal">
+            <div class="modal-content">
+                <h4>Add New BBQ Location</h4>
+                <form id="createBBQForm">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="locationName" type="text" required>
+                            <label for="locationName">Location Name</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="address" type="text" required>
+                            <label for="address">Coordinates (longitude, latitude)</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <select id="status" required>
+                                <option value="" disabled selected>Choose status</option>
+                                <option value="Working">Working</option>
+                                <option value="Faulty">Faulty</option>
+                                <option value="Cleaning Required">Cleaning Required</option>
+                                <option value="Deep Cleaning Required">Deep Cleaning Required</option>
+                                <option value="Offline">Offline</option>
+                            </select>
+                            <label>Status</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <select id="cleanliness" required>
+                                <option value="" disabled selected>Choose cleanliness</option>
+                                <option value="Clean">Clean</option>
+                                <option value="Dirty">Dirty</option>
+                                <option value="Very Dirty">Very Dirty</option>
+                            </select>
+                            <label>Cleanliness</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
+                <a href="#!" class="waves-effect waves-green btn-flat" onclick="submitCreateBBQ()">Create</a>
+            </div>
+        </div>
+
+        <!-- Edit BBQ Location Modal -->
+        <div id="editBBQModal" class="modal">
+            <div class="modal-content">
+                <h4>Edit BBQ Location</h4>
+                <form id="editBBQForm">
+                    <input type="hidden" id="editLocationId">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="editLocationName" type="text" required>
+                            <label for="editLocationName">Location Name</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="editAddress" type="text" required>
+                            <label for="editAddress">Coordinates (longitude, latitude)</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <select id="editStatus" required>
+                                <option value="" disabled>Choose status</option>
+                                <option value="Working">Working</option>
+                                <option value="Faulty">Faulty</option>
+                                <option value="Cleaning Required">Cleaning Required</option>
+                                <option value="Deep Cleaning Required">Deep Cleaning Required</option>
+                                <option value="Offline">Offline</option>
+                            </select>
+                            <label>Status</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <select id="editCleanliness" required>
+                                <option value="" disabled>Choose cleanliness</option>
+                                <option value="Clean">Clean</option>
+                                <option value="Dirty">Dirty</option>
+                                <option value="Very Dirty">Very Dirty</option>
+                            </select>
+                            <label>Cleanliness</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
+                <a href="#!" class="waves-effect waves-green btn-flat" onclick="submitEditBBQ()">Save Changes</a>
             </div>
         </div>
     </main>
@@ -248,8 +330,89 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- Load app.js -->
     <script type="module" src="/js/app.js"></script>
+    <!-- Import BBQ service -->
+    <script type="module">
+        import { bbqService } from '/js/services/api.js';
+        import { isLoggedIn, getUserData } from '/js/utils/helpers.js';
+        import { ROLE_DISPLAY_NAMES } from '/js/utils/constants.js';
 
-    <script>
+        // Function to check authentication and role
+        function checkAuth() {
+            if (!isLoggedIn()) {
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            const userData = getUserData();
+            if (!userData || userData.role !== 'council') {
+                window.location.href = '/';
+                return false;
+            }
+
+            return true;
+        }
+
+        // Function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-AU', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Function to check if BBQ was cleaned today
+        function wasCleanedToday(dateString) {
+            const lastCleaned = new Date(dateString);
+            const today = new Date();
+            return lastCleaned.toDateString() === today.toDateString();
+        }
+
+        // Function to load BBQ data
+        async function loadBBQData() {
+            try {
+                const bbqs = await bbqService.getAllBBQs();
+                const tbody = document.querySelector('#bbq-table tbody');
+                tbody.innerHTML = ''; // Clear existing rows
+
+                bbqs.forEach(bbq => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>#${bbq.id.slice(-6)}</td>
+                        <td>${bbq.name}</td>
+                        <td>${bbq.lng.toFixed(6)}, ${bbq.lat.toFixed(6)}</td>
+                        <td>${bbq.status}</td>
+                        <td><span class="cleanliness-status cleanliness-${bbq.cleanliness.toLowerCase().replace(' ', '-')}">${bbq.cleanliness}</span></td>
+                        <td>
+                            <span class="last-cleaned-time">
+                                ${formatDate(bbq.lastCleaned)}
+                                ${wasCleanedToday(bbq.lastCleaned)
+                            ? '<i class="material-icons check-icon">check_circle</i>'
+                            : '<i class="material-icons warning-icon">warning</i>'}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="#editBBQModal" class="btn-small waves-effect waves-light modal-trigger" 
+                               onclick="editBBQLocation('${bbq.id}', '${bbq.name}', '${bbq.lng}, ${bbq.lat}', '${bbq.status}', '${bbq.cleanliness}')">
+                                <i class="material-icons left">edit</i>Update
+                            </a>
+                            <a href="#!" class="btn-small waves-effect waves-light red" 
+                               onclick="deleteBBQLocation('${bbq.id}', '${bbq.name}')">
+                                <i class="material-icons left">delete</i>Delete
+                            </a>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading BBQ data:', error);
+                M.toast({ html: 'Error loading BBQ data', classes: 'red' });
+            }
+        }
+
         // Function to initialize the page
         async function initializePage() {
             try {
@@ -261,6 +424,10 @@
                 // Initialize sidenav
                 const elems = document.querySelectorAll('.sidenav');
                 M.Sidenav.init(elems);
+
+                // Initialize tabs
+                const tabs = document.querySelectorAll('.tabs');
+                M.Tabs.init(tabs);
 
                 // Load footer
                 const footerResponse = await fetch('/components/footer.html');
@@ -276,11 +443,8 @@
                 // Check authentication
                 checkAuth();
 
-                // Verify council access
-                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-                if (!userData || userData.role !== 'council') {
-                    window.location.href = '/';
-                }
+                // Load BBQ data
+                await loadBBQData();
             } catch (error) {
                 console.error('Error initializing page:', error);
             }
@@ -290,55 +454,93 @@
         document.addEventListener('DOMContentLoaded', initializePage);
 
         // Function to handle create BBQ form submission
-        function submitCreateBBQ() {
+        async function submitCreateBBQ() {
             const form = document.getElementById('createBBQForm');
+            const [lng, lat] = document.getElementById('address').value.split(',').map(coord => parseFloat(coord.trim()));
+
             const formData = {
-                locationName: document.getElementById('locationName').value,
-                address: document.getElementById('address').value,
-                supervisor: document.getElementById('supervisor').value,
-                status: document.getElementById('status').value
+                name: document.getElementById('locationName').value,
+                lat: lat,
+                lng: lng,
+                status: document.getElementById('status').value,
+                cleanliness: document.getElementById('cleanliness').value,
+                lastCleaned: new Date().toISOString()
             };
 
-            // Here you would typically make an API call to create the BBQ location
-            console.log('Creating new BBQ location:', formData);
+            try {
+                await bbqService.createBBQ(formData);
+                M.toast({ html: 'BBQ location created successfully', classes: 'green' });
 
-            // Close the modal and reset the form
-            const modal = M.Modal.getInstance(document.getElementById('createBBQModal'));
-            modal.close();
-            form.reset();
+                // Close the modal and reset the form
+                const modal = M.Modal.getInstance(document.getElementById('createBBQModal'));
+                modal.close();
+                form.reset();
+
+                // Reload BBQ data
+                await loadBBQData();
+            } catch (error) {
+                console.error('Error creating BBQ location:', error);
+                M.toast({ html: 'Error creating BBQ location', classes: 'red' });
+            }
         }
 
         // Function to handle edit BBQ form submission
-        function submitEditBBQ() {
+        async function submitEditBBQ() {
             const form = document.getElementById('editBBQForm');
+            const [lng, lat] = document.getElementById('editAddress').value.split(',').map(coord => parseFloat(coord.trim()));
+
             const formData = {
-                locationId: document.getElementById('editLocationId').value,
-                locationName: document.getElementById('editLocationName').value,
-                address: document.getElementById('editAddress').value,
-                supervisor: document.getElementById('editSupervisor').value,
-                status: document.getElementById('editStatus').value
+                id: document.getElementById('editLocationId').value,
+                name: document.getElementById('editLocationName').value,
+                lat: lat,
+                lng: lng,
+                status: document.getElementById('editStatus').value,
+                cleanliness: document.getElementById('editCleanliness').value,
+                lastCleaned: new Date().toISOString()
             };
 
-            // Here you would typically make an API call to update the BBQ location
-            console.log('Updating BBQ location:', formData);
+            try {
+                await bbqService.updateBBQ(formData.id, formData);
+                M.toast({ html: 'BBQ location updated successfully', classes: 'green' });
 
-            // Close the modal and reset the form
-            const modal = M.Modal.getInstance(document.getElementById('editBBQModal'));
-            modal.close();
-            form.reset();
+                // Close the modal and reset the form
+                const modal = M.Modal.getInstance(document.getElementById('editBBQModal'));
+                modal.close();
+                form.reset();
+
+                // Reload BBQ data
+                await loadBBQData();
+            } catch (error) {
+                console.error('Error updating BBQ location:', error);
+                M.toast({ html: 'Error updating BBQ location', classes: 'red' });
+            }
         }
 
         // Function to populate edit form with BBQ location data
-        function editBBQLocation(locationId, locationName, address, supervisor, status) {
-            document.getElementById('editLocationId').value = locationId;
-            document.getElementById('editLocationName').value = locationName;
+        function editBBQLocation(id, name, address, status, cleanliness) {
+            document.getElementById('editLocationId').value = id;
+            document.getElementById('editLocationName').value = name;
             document.getElementById('editAddress').value = address;
-            document.getElementById('editSupervisor').value = supervisor;
             document.getElementById('editStatus').value = status;
+            document.getElementById('editCleanliness').value = cleanliness;
 
             // Reinitialize select elements
-            M.FormSelect.init(document.getElementById('editSupervisor'));
             M.FormSelect.init(document.getElementById('editStatus'));
+            M.FormSelect.init(document.getElementById('editCleanliness'));
+        }
+
+        // Function to delete BBQ location
+        async function deleteBBQLocation(id, name) {
+            if (confirm(`Are you sure you want to delete BBQ location "${name}"?`)) {
+                try {
+                    await bbqService.deleteBBQ(id);
+                    M.toast({ html: 'BBQ location deleted successfully', classes: 'green' });
+                    await loadBBQData();
+                } catch (error) {
+                    console.error('Error deleting BBQ location:', error);
+                    M.toast({ html: 'Error deleting BBQ location', classes: 'red' });
+                }
+            }
         }
     </script>
 </body>
