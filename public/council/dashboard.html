@@ -10,6 +10,159 @@
     <link href="/css/variables.css" rel="stylesheet">
     <link href="/css/components.css" rel="stylesheet">
     <link href="/style.css" rel="stylesheet">
+    <style>
+        /* Tab Styling */
+        .tabs {
+            background-color: #fff;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .tabs .tab {
+            text-transform: none;
+        }
+
+        .tabs .tab a {
+            color: rgba(0, 0, 0, 0.7) !important;
+            font-weight: 500;
+            padding: 0 24px;
+            height: 48px;
+            line-height: 48px;
+            transition: all 0.3s ease;
+        }
+
+        .tabs .tab a:hover {
+            background-color: rgba(0, 0, 0, 0.05) !important;
+            color: #26a69a !important;
+        }
+
+        .tabs .tab a.active {
+            background-color: #26a69a !important;
+            color: white !important;
+        }
+
+        .tabs .indicator {
+            display: none !important;
+        }
+
+        .tabs .tab a i {
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .tabs .tab a i.material-icons {
+            font-size: 20px;
+            line-height: 48px;
+        }
+
+        /* Button Hover Effects */
+        .btn-small {
+            transition: all 0.3s ease;
+            margin: 0 4px;
+        }
+
+        .btn-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-small.red:hover {
+            background-color: #d32f2f !important;
+        }
+
+        .btn-small.teal:hover {
+            background-color: #00897b !important;
+        }
+
+        .btn-small.waves-light:hover {
+            background-color: #26a69a !important;
+        }
+
+        /* Cleanliness Status Styling */
+        .cleanliness-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .cleanliness-clean {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .cleanliness-dirty {
+            background-color: #FFC107;
+            color: black;
+        }
+
+        .cleanliness-very-dirty {
+            background-color: #F44336;
+            color: white;
+        }
+
+        /* Last Cleaned Warning Styling */
+        .last-cleaned-time {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-icon {
+            color: #FFC107;
+            font-size: 1.2em;
+        }
+
+        .check-icon {
+            color: #4CAF50;
+            font-size: 1.2em;
+        }
+
+        /* Modal Button Styling */
+        .modal-footer .btn {
+            transition: all 0.3s ease;
+        }
+
+        .modal-footer .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-footer .btn.teal:hover {
+            background-color: #00897b !important;
+        }
+
+        .modal-footer .btn-flat:hover {
+            background-color: rgba(0, 0, 0, 0.05) !important;
+        }
+
+        /* Status Badge Styling */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .status-badge.pending {
+            background-color: #FFC107;
+        }
+
+        .status-badge.in-progress {
+            background-color: #2196F3;
+        }
+
+        .status-badge.resolved {
+            background-color: #4CAF50;
+        }
+
+        .status-badge.closed {
+            background-color: #9E9E9E;
+        }
+    </style>
 </head>
 
 <body>
@@ -24,214 +177,205 @@
                 </div>
             </div>
 
-            <!-- BBQ Locations Management Section -->
+            <!-- Tab Navigation -->
             <div class="row">
                 <div class="col s12">
-                    <div class="card">
-                        <div class="card-content">
-                            <div class="row" style="margin-bottom: 0;">
-                                <div class="col s6">
-                                    <span class="card-title">BBQ Locations Management</span>
-                                </div>
-                                <div class="col s6" style="text-align: right;">
-                                    <a href="#createBBQModal"
-                                        class="btn-floating btn-small waves-effect waves-light modal-trigger">
-                                        <i class="material-icons">add</i>
-                                    </a>
+                    <ul class="tabs tabs-fixed-width">
+                        <li class="tab col s6">
+                            <a class="active waves-effect" href="#bbq-locations">
+                                <i class="material-icons">outdoor_grill</i>
+                                BBQ Locations
+                            </a>
+                        </li>
+                        <li class="tab col s6">
+                            <a class="waves-effect" href="#issues">
+                                <i class="material-icons">warning</i>
+                                Issues Management
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- BBQ Locations Tab -->
+            <div id="bbq-locations" class="col s12">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row" style="margin-bottom: 0;">
+                            <div class="col s6">
+                                <span class="card-title">BBQ Locations Management</span>
+                            </div>
+                            <div class="col s6" style="text-align: right;">
+                                <a href="#createBBQModal"
+                                    class="btn-floating btn-small waves-effect waves-light modal-trigger">
+                                    <i class="material-icons">add</i>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="tableLoader" class="center-align" style="padding: 20px;">
+                            <div class="preloader-wrapper active">
+                                <div class="spinner-layer spinner-green-only">
+                                    <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="gap-patch">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                    </div>
                                 </div>
                             </div>
-                            <table class="striped">
-                                <thead>
-                                    <tr>
-                                        <th>Location ID</th>
-                                        <th>Location Name</th>
-                                        <th>Address</th>
-                                        <th>Assigned Supervisor</th>
-                                        <th>Status</th>
-                                        <th>Last Maintenance</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>#BBQ001</td>
-                                        <td>Albert Park</td>
-                                        <td>123 Albert Park Rd</td>
-                                        <td>John Smith</td>
-                                        <td>Operational</td>
-                                        <td>2024-03-15</td>
-                                        <td>
-                                            <a href="#editBBQModal" class="btn-small modal-trigger">Edit</a>
-                                            <a href="#!" class="btn-small">Assign Supervisor</a>
-                                            <a href="#!" class="btn-small">View Details</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>#BBQ002</td>
-                                        <td>Fitzroy Gardens</td>
-                                        <td>456 Fitzroy St</td>
-                                        <td>Sarah Johnson</td>
-                                        <td>Maintenance Required</td>
-                                        <td>2024-03-10</td>
-                                        <td>
-                                            <a href="#editBBQModal" class="btn-small modal-trigger">Edit</a>
-                                            <a href="#!" class="btn-small">Assign Supervisor</a>
-                                            <a href="#!" class="btn-small">View Details</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <p style="margin-top: 10px; color: #666;">Loading BBQ locations...</p>
                         </div>
+                        <table id="bbq-table" class="striped" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>Location ID</th>
+                                    <th>Location Name</th>
+                                    <th>Coordinates</th>
+                                    <th>Status</th>
+                                    <th>Cleanliness</th>
+                                    <th>Last Cleaned</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Create BBQ Location Modal -->
-            <div id="createBBQModal" class="modal">
-                <div class="modal-content">
-                    <h4>Add New BBQ Location</h4>
-                    <form id="createBBQForm">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input id="locationName" type="text" required>
-                                <label for="locationName">Location Name</label>
+            <!-- Issues Management Tab -->
+            <div id="issues" class="col s12">
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">Issues Management</span>
+                        <div id="issuesTableLoader" class="center-align" style="padding: 20px;">
+                            <div class="preloader-wrapper active">
+                                <div class="spinner-layer spinner-green-only">
+                                    <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="gap-patch">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                    </div>
+                                </div>
                             </div>
+                            <p style="margin-top: 10px; color: #666;">Loading issues...</p>
                         </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input id="address" type="text" required>
-                                <label for="address">Address</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <select id="supervisor" required>
-                                    <option value="" disabled selected>Choose a supervisor</option>
-                                    <option value="1">John Smith</option>
-                                    <option value="2">Sarah Johnson</option>
-                                    <option value="3">Mike Brown</option>
-                                </select>
-                                <label>Assigned Supervisor</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <select id="status" required>
-                                    <option value="" disabled selected>Choose status</option>
-                                    <option value="operational">Operational</option>
-                                    <option value="maintenance">Maintenance Required</option>
-                                    <option value="out_of_order">Out of Order</option>
-                                </select>
-                                <label>Status</label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
-                    <a href="#!" class="waves-effect waves-green btn-flat" onclick="submitCreateBBQ()">Create</a>
-                </div>
-            </div>
-
-            <!-- Edit BBQ Location Modal -->
-            <div id="editBBQModal" class="modal">
-                <div class="modal-content">
-                    <h4>Edit BBQ Location</h4>
-                    <form id="editBBQForm">
-                        <input type="hidden" id="editLocationId">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input id="editLocationName" type="text" required>
-                                <label for="editLocationName">Location Name</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input id="editAddress" type="text" required>
-                                <label for="editAddress">Address</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <select id="editSupervisor" required>
-                                    <option value="" disabled>Choose a supervisor</option>
-                                    <option value="1">John Smith</option>
-                                    <option value="2">Sarah Johnson</option>
-                                    <option value="3">Mike Brown</option>
-                                </select>
-                                <label>Assigned Supervisor</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <select id="editStatus" required>
-                                    <option value="" disabled>Choose status</option>
-                                    <option value="operational">Operational</option>
-                                    <option value="maintenance">Maintenance Required</option>
-                                    <option value="out_of_order">Out of Order</option>
-                                </select>
-                                <label>Status</label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
-                    <a href="#!" class="waves-effect waves-green btn-flat" onclick="submitEditBBQ()">Save Changes</a>
-                </div>
-            </div>
-
-            <!-- Issues Management Section -->
-            <div class="row">
-                <div class="col s12">
-                    <div class="card">
-                        <div class="card-content">
-                            <span class="card-title">Issues Management</span>
-                            <table class="striped">
-                                <thead>
-                                    <tr>
-                                        <th>Issue ID</th>
-                                        <th>Location</th>
-                                        <th>Reported By</th>
-                                        <th>Issue Type</th>
-                                        <th>Assigned Supervisor</th>
-                                        <th>Status</th>
-                                        <th>Reported Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>#ISS001</td>
-                                        <td>Albert Park</td>
-                                        <td>Public User</td>
-                                        <td>Gas Leak</td>
-                                        <td>Unassigned</td>
-                                        <td>Open</td>
-                                        <td>2024-03-20</td>
-                                        <td>
-                                            <a href="#!" class="btn-small">Assign Supervisor</a>
-                                            <a href="#!" class="btn-small">View Details</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>#ISS002</td>
-                                        <td>Fitzroy Gardens</td>
-                                        <td>Public User</td>
-                                        <td>Cleaning Required</td>
-                                        <td>Sarah Johnson</td>
-                                        <td>In Progress</td>
-                                        <td>2024-03-19</td>
-                                        <td>
-                                            <a href="#!" class="btn-small">Reassign</a>
-                                            <a href="#!" class="btn-small">View Details</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <table id="issues-table" class="striped" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>Issue ID</th>
+                                    <th>Location</th>
+                                    <th>Reported By</th>
+                                    <th>Issue Type</th>
+                                    <th>Status</th>
+                                    <th>Reported Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Create BBQ Location Modal -->
+        <div id="createBBQModal" class="modal">
+            <div class="modal-content">
+                <h4>Add New BBQ Location</h4>
+                <form id="createBBQForm">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="locationName" type="text" required>
+                            <label for="locationName">Location Name</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input id="latitude" type="number" step="any" required>
+                            <label for="latitude">Latitude</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input id="longitude" type="number" step="any" required>
+                            <label for="longitude">Longitude</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
+                <a href="#!" class="waves-effect waves-light btn teal" onclick="submitCreateBBQ()">Create</a>
+            </div>
+        </div>
+
+        <!-- Edit BBQ Location Modal -->
+        <div id="editBBQModal" class="modal">
+            <div class="modal-content">
+                <h4>Edit BBQ Location</h4>
+                <form id="editBBQForm">
+                    <input type="hidden" id="editLocationId">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="editLocationName" type="text" required>
+                            <label for="editLocationName">Location Name</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input id="editLatitude" type="number" step="any" required>
+                            <label for="editLatitude">Latitude</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input id="editLongitude" type="number" step="any" required>
+                            <label for="editLongitude">Longitude</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <select id="editStatus" required>
+                                <option value="" disabled>Choose status</option>
+                                <option value="Working">Working</option>
+                                <option value="Faulty">Faulty</option>
+                                <option value="Cleaning Required">Cleaning Required</option>
+                                <option value="Deep Cleaning Required">Deep Cleaning Required</option>
+                                <option value="Offline">Offline</option>
+                            </select>
+                            <label>Status</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
+                <a href="#!" class="waves-effect waves-light btn teal" onclick="submitEditBBQ()">Save Changes</a>
+            </div>
+        </div>
+
+        <!-- Add Supervisor Assignment Modal -->
+        <div id="assignSupervisorModal" class="modal">
+            <div class="modal-content">
+                <h4>Assign Supervisor</h4>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <select id="supervisorSelect">
+                            <option value="" disabled selected>Choose a supervisor</option>
+                        </select>
+                        <label>Select Supervisor</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
+                <a href="#!" class="waves-effect waves-light btn teal" onclick="submitSupervisorAssignment()">Assign</a>
             </div>
         </div>
     </main>
@@ -239,86 +383,419 @@
     <!-- Footer will be loaded here -->
     <div id="footer-placeholder"></div>
 
+    <!-- Load Materialize CSS and JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="/js/app.js"></script>
-    <script>
-        // Load header and footer
-        fetch('/components/header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-                // Initialize sidenav after header is loaded
-                var elems = document.querySelectorAll('.sidenav');
-                var instances = M.Sidenav.init(elems);
+
+    <!-- Load configuration first -->
+    <script src="/js/config.js"></script>
+    <!-- Load Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Load app.js -->
+    <script type="module" src="/js/app.js"></script>
+    <!-- Import BBQ service -->
+    <script type="module">
+        import { bbqService, faultService } from '/js/services/api.js';
+        import { isLoggedIn, getUserData } from '/js/utils/helpers.js';
+        import { ROLE_DISPLAY_NAMES } from '/js/utils/constants.js';
+
+        // Store current fault data for assignment
+        let currentFault = null;
+
+        // Function to check authentication and role
+        function checkAuth() {
+            if (!isLoggedIn()) {
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            const userData = getUserData();
+            if (!userData || userData.role !== 'council') {
+                window.location.href = '/';
+                return false;
+            }
+
+            return true;
+        }
+
+        // Function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-AU', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
             });
+        }
 
-        fetch('/components/footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-            });
+        // Function to check if BBQ was cleaned today
+        function wasCleanedToday(dateString) {
+            const lastCleaned = new Date(dateString);
+            const today = new Date();
+            return lastCleaned.toDateString() === today.toDateString();
+        }
 
-        // Initialize modals
-        document.addEventListener('DOMContentLoaded', function () {
-            var modals = document.querySelectorAll('.modal');
-            M.Modal.init(modals);
+        // Function to load BBQ data
+        async function loadBBQData() {
+            try {
+                const bbqs = await bbqService.getAllBBQs();
+                const tbody = document.querySelector('#bbq-table tbody');
+                tbody.innerHTML = '';
 
-            // Initialize select elements
-            var selects = document.querySelectorAll('select');
-            M.FormSelect.init(selects);
-        });
+                if (bbqs.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="center-align" style="padding: 20px;">
+                                <p style="color: #666;">No BBQ locations found</p>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    bbqs.forEach(bbq => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>#${bbq.id.slice(-6)}</td>
+                            <td>${bbq.name}</td>
+                            <td>${bbq.lng.toFixed(6)}, ${bbq.lat.toFixed(6)}</td>
+                            <td>${bbq.status}</td>
+                            <td><span class="cleanliness-status cleanliness-${bbq.cleanliness.toLowerCase().replace(' ', '-')}">${bbq.cleanliness}</span></td>
+                            <td>
+                                <span class="last-cleaned-time">
+                                    ${formatDate(bbq.lastCleaned)}
+                                    ${wasCleanedToday(bbq.lastCleaned)
+                                ? '<i class="material-icons check-icon">check_circle</i>'
+                                : '<i class="material-icons warning-icon">warning</i>'}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="#editBBQModal" class="btn-small waves-effect waves-light teal modal-trigger" 
+                                   onclick="openUpdateBBQModal('${bbq.id}')">
+                                    <i class="material-icons left">edit</i>Update
+                                </a>
+                                <a href="#!" class="btn-small waves-effect waves-light red" 
+                                   onclick="deleteBBQLocation('${bbq.id}', '${bbq.name}')">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+
+                // Hide loader, show table
+                document.getElementById('tableLoader').style.display = 'none';
+                document.getElementById('bbq-table').style.display = 'table';
+            } catch (error) {
+                console.error('Error loading BBQ data:', error);
+                const tbody = document.querySelector('#bbq-table tbody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="center-align" style="padding: 20px;">
+                            <p style="color: #f44336;">Error loading BBQ data. Please try again.</p>
+                        </td>
+                    </tr>
+                `;
+
+                // Hide loader, show table
+                document.getElementById('tableLoader').style.display = 'none';
+                document.getElementById('bbq-table').style.display = 'table';
+
+                M.toast({ html: 'Error loading BBQ data', classes: 'red' });
+            }
+        }
+
+        // Function to initialize the page
+        async function initializePage() {
+            try {
+                // Load header
+                const headerResponse = await fetch('/components/header.html');
+                const headerData = await headerResponse.text();
+                document.getElementById('header-placeholder').innerHTML = headerData;
+
+                // Initialize sidenav
+                const elems = document.querySelectorAll('.sidenav');
+                M.Sidenav.init(elems);
+
+                // Initialize tabs
+                const tabs = document.querySelectorAll('.tabs');
+                M.Tabs.init(tabs);
+
+                // Load footer
+                const footerResponse = await fetch('/components/footer.html');
+                const footerData = await footerResponse.text();
+                document.getElementById('footer-placeholder').innerHTML = footerData;
+
+                // Initialize modals and selects
+                const modals = document.querySelectorAll('.modal');
+                M.Modal.init(modals);
+                const selects = document.querySelectorAll('select');
+                M.FormSelect.init(selects);
+
+                // Check authentication
+                checkAuth();
+
+                // Load BBQ data
+                await loadBBQData();
+
+                // Load issues data
+                await loadIssuesData();
+            } catch (error) {
+                console.error('Error initializing page:', error);
+            }
+        }
+
+        // Function to load issues data
+        async function loadIssuesData() {
+            try {
+                const faults = await faultService.getAllFaults();
+                const tbody = document.querySelector('#issues-table tbody');
+                tbody.innerHTML = '';
+
+                if (faults.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="center-align" style="padding: 20px;">
+                                <p style="color: #666;">No issues found</p>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    faults.forEach(fault => {
+                        const statusClass = fault.status.toLowerCase().replace(' ', '-');
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>#${fault._id.slice(-6)}</td>
+                            <td>${fault.bbqName}</td>
+                            <td>${fault.reporterName}</td>
+                            <td>${fault.issue}</td>
+                            <td><span class="status-badge ${statusClass}">${fault.status}</span></td>
+                            <td>${formatDate(fault.reportedAt)}</td>
+                            <td>
+                                ${fault.status !== 'Resolved' ? `
+                                <a href="#assignSupervisorModal" class="btn-small waves-effect waves-light teal modal-trigger" 
+                                   onclick="openAssignSupervisorModal('${fault._id}', '${fault.bbqId}', '${fault.issue}')">
+                                    <i class="material-icons left">edit</i>Assign
+                                </a>
+                                ` : ''}
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+
+                // Hide loader, show table
+                document.getElementById('issuesTableLoader').style.display = 'none';
+                document.getElementById('issues-table').style.display = 'table';
+            } catch (error) {
+                console.error('Error loading issues:', error);
+                const tbody = document.querySelector('#issues-table tbody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="center-align" style="padding: 20px;">
+                            <p style="color: #f44336;">Error loading issues. Please try again.</p>
+                        </td>
+                    </tr>
+                `;
+
+                // Hide loader, show table
+                document.getElementById('issuesTableLoader').style.display = 'none';
+                document.getElementById('issues-table').style.display = 'table';
+
+                M.toast({ html: 'Error loading issues', classes: 'red' });
+            }
+        }
+
+        // Function to load supervisors
+        async function loadSupervisors() {
+            try {
+                const response = await faultService.getAllSupervisors();
+                const supervisors = response.users || [];
+                const select = document.getElementById('supervisorSelect');
+
+                // Clear existing options except the first one
+                while (select.options.length > 1) {
+                    select.remove(1);
+                }
+
+                // Add supervisor options
+                supervisors.forEach(supervisor => {
+                    const option = document.createElement('option');
+                    option.value = supervisor._id;
+                    option.textContent = supervisor.userName;
+                    select.appendChild(option);
+                });
+
+                // Initialize select
+                M.FormSelect.init(select);
+            } catch (error) {
+                console.error('Error loading supervisors:', error);
+                M.toast({ html: 'Error loading supervisors', classes: 'red' });
+            }
+        }
+
+        // Function to open assign supervisor modal
+        window.openAssignSupervisorModal = async function (faultId, bbqId, issue) {
+            currentFault = { id: faultId, bbqId: bbqId, issue: issue };
+            await loadSupervisors();
+            const modal = M.Modal.getInstance(document.getElementById('assignSupervisorModal'));
+            modal.open();
+        }
+
+        // Function to submit supervisor assignment
+        window.submitSupervisorAssignment = async function () {
+            const supervisorId = document.getElementById('supervisorSelect').value;
+            if (!supervisorId) {
+                M.toast({ html: 'Please select a supervisor', classes: 'red' });
+                return;
+            }
+
+            try {
+                await faultService.assignSupervisor(
+                    currentFault.id,
+                    supervisorId,
+                    currentFault.bbqId,
+                    currentFault.issue
+                );
+                M.toast({ html: 'Supervisor assigned successfully', classes: 'green' });
+                const modal = M.Modal.getInstance(document.getElementById('assignSupervisorModal'));
+                modal.close();
+
+                // Reload issues data
+                await loadIssuesData();
+            } catch (error) {
+                console.error('Error assigning supervisor:', error);
+                M.toast({ html: 'Error assigning supervisor', classes: 'red' });
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializePage);
 
         // Function to handle create BBQ form submission
-        function submitCreateBBQ() {
+        window.submitCreateBBQ = async function () {
             const form = document.getElementById('createBBQForm');
+            const latitude = parseFloat(document.getElementById('latitude').value);
+            const longitude = parseFloat(document.getElementById('longitude').value);
+
             const formData = {
-                locationName: document.getElementById('locationName').value,
-                address: document.getElementById('address').value,
-                supervisor: document.getElementById('supervisor').value,
-                status: document.getElementById('status').value
+                name: document.getElementById('locationName').value,
+                latitude: latitude,
+                longitude: longitude
             };
 
-            // Here you would typically make an API call to create the BBQ location
-            console.log('Creating new BBQ location:', formData);
+            try {
+                await bbqService.createBBQ(formData);
+                M.toast({ html: 'BBQ location created successfully', classes: 'green' });
 
-            // Close the modal and reset the form
-            const modal = M.Modal.getInstance(document.getElementById('createBBQModal'));
-            modal.close();
-            form.reset();
+                // Close the modal and reset the form
+                const modal = M.Modal.getInstance(document.getElementById('createBBQModal'));
+                modal.close();
+                form.reset();
+
+                // Reload BBQ data
+                await loadBBQData();
+            } catch (error) {
+                console.error('Error creating BBQ location:', error);
+                M.toast({ html: 'Error creating BBQ location', classes: 'red' });
+            }
+        }
+
+        // Function to open update BBQ modal
+        window.openUpdateBBQModal = async function (bbqId) {
+            try {
+                const bbqs = await bbqService.getAllBBQs();
+                const bbq = bbqs.find(b => b.id === bbqId);
+
+                if (!bbq) {
+                    M.toast({ html: 'BBQ location not found', classes: 'red' });
+                    return;
+                }
+
+                // Set form values
+                document.getElementById('editLocationId').value = bbq.id;
+                document.getElementById('editLocationName').value = bbq.name;
+                document.getElementById('editLatitude').value = bbq.lat;
+                document.getElementById('editLongitude').value = bbq.lng;
+
+                // Set status
+                const statusSelect = document.getElementById('editStatus');
+                statusSelect.value = bbq.status;
+
+                // Update Materialize components
+                M.updateTextFields();
+                M.FormSelect.init(statusSelect);
+
+                // Open modal
+                const modal = M.Modal.getInstance(document.getElementById('editBBQModal'));
+                modal.open();
+            } catch (error) {
+                console.error('Error opening update modal:', error);
+                M.toast({ html: 'Error loading BBQ data', classes: 'red' });
+            }
         }
 
         // Function to handle edit BBQ form submission
-        function submitEditBBQ() {
-            const form = document.getElementById('editBBQForm');
-            const formData = {
-                locationId: document.getElementById('editLocationId').value,
-                locationName: document.getElementById('editLocationName').value,
-                address: document.getElementById('editAddress').value,
-                supervisor: document.getElementById('editSupervisor').value,
-                status: document.getElementById('editStatus').value
-            };
+        window.submitEditBBQ = async function () {
+            try {
+                const formData = {
+                    name: document.getElementById('editLocationName').value,
+                    latitude: parseFloat(document.getElementById('editLatitude').value),
+                    longitude: parseFloat(document.getElementById('editLongitude').value),
+                    status: document.getElementById('editStatus').value
+                };
 
-            // Here you would typically make an API call to update the BBQ location
-            console.log('Updating BBQ location:', formData);
+                // Validate form data
+                if (!formData.name || !formData.latitude || !formData.longitude || !formData.status) {
+                    M.toast({ html: 'Please fill in all required fields', classes: 'red' });
+                    return;
+                }
 
-            // Close the modal and reset the form
-            const modal = M.Modal.getInstance(document.getElementById('editBBQModal'));
-            modal.close();
-            form.reset();
+                const bbqId = document.getElementById('editLocationId').value;
+                await bbqService.updateBBQ(bbqId, formData);
+                M.toast({ html: 'BBQ location updated successfully', classes: 'green' });
+
+                // Close modal and reset form
+                const modal = M.Modal.getInstance(document.getElementById('editBBQModal'));
+                modal.close();
+                document.getElementById('editBBQForm').reset();
+
+                // Reload BBQ data
+                await loadBBQData();
+            } catch (error) {
+                console.error('Error updating BBQ location:', error);
+                M.toast({ html: 'Error updating BBQ location', classes: 'red' });
+            }
         }
 
-        // Function to populate edit form with BBQ location data
-        function editBBQLocation(locationId, locationName, address, supervisor, status) {
-            document.getElementById('editLocationId').value = locationId;
-            document.getElementById('editLocationName').value = locationName;
-            document.getElementById('editAddress').value = address;
-            document.getElementById('editSupervisor').value = supervisor;
-            document.getElementById('editStatus').value = status;
-
-            // Reinitialize select elements
-            M.FormSelect.init(document.getElementById('editSupervisor'));
-            M.FormSelect.init(document.getElementById('editStatus'));
+        // Function to delete BBQ location
+        window.deleteBBQLocation = async function (id, name) {
+            if (confirm(`Are you sure you want to delete BBQ location "${name}"?`)) {
+                try {
+                    await bbqService.deleteBBQ(id);
+                    M.toast({ html: 'BBQ location deleted successfully', classes: 'green' });
+                    await loadBBQData();
+                } catch (error) {
+                    console.error('Error deleting BBQ location:', error);
+                    M.toast({ html: 'Error deleting BBQ location', classes: 'red' });
+                }
+            }
         }
+
+        // Initialize modals when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            const modals = document.querySelectorAll('.modal');
+            M.Modal.init(modals, {
+                onOpenStart: function (modal) {
+                    if (modal.id === 'editBBQModal') {
+                        // Ensure form is properly initialized when modal opens
+                        M.updateTextFields();
+                        const statusSelect = document.getElementById('editStatus');
+                        M.FormSelect.init(statusSelect);
+                    }
+                }
+            });
+        });
     </script>
 </body>
 
