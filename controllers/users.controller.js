@@ -1,5 +1,5 @@
 const {
-  get,add,getById,getByEmail,updateById,removeById,updateByEmail,removeByEmail,getByRole
+  get, add, getById, getByEmail, updateById, removeById, updateByEmail, removeByEmail, getByRole
 } = require('../services/users.service');
 
 
@@ -93,8 +93,8 @@ const deleteUserByEmail = async (req, res) => {
 
 const getUserByRole = async (req, res) => {
   try {
-    const role = req.params.role.toLowerCase(); 
-    const users = await getByRole(role); 
+    const role = req.params.role.toLowerCase();
+    const users = await getByRole(role);
     const activeUsers = users.filter(user => user.status === true);
 
     if (activeUsers.length === 0) {

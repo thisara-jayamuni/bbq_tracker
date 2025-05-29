@@ -52,10 +52,12 @@ const updateById = async (id, projectData) => {
 
 const removeById = async (id) => {
   try {
-    return await User.findByIdAndDelete(id);
-    // return null;
+    return await User.findByIdAndUpdate(
+      id,
+      { status: false }
+    );
   } catch (error) {
-    console.error('AddUser Controller Error:', error.message);
+    console.error('removeById Service Error:', error.message);
     throw error;
   }
 };
