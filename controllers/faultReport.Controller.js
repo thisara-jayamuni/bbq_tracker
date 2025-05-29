@@ -1,11 +1,26 @@
 const FaultReport = require("../models/FaultReport");
+const BBQ = require("../models/BBQ");
 
 const createFaultReport = async (req, res) => {
-  try {
-    const report = new FaultReport(req.body);
+ try {
+    const { bbqId, reporterName, issue } = req.body;
+
+    const bbq = await BBQ.findById(bbqId);
+    if (!bbq) {
+      return res.status(404).json({ error: "BBQ not found" });
+    }
+
+    const report = new FaultReport({
+      bbqId,
+      bbqName: bbq.name,
+      reporterName,
+      issue
+    });
+
     await report.save();
     res.status(201).json(report);
   } catch (error) {
+    console.error("Error creating fault report:", error);
     res.status(500).json({ error: error.message });
   }
 };
