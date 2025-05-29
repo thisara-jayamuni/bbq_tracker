@@ -1,5 +1,5 @@
 const {
-  get,add,getById,getByEmail,update,remove,updateByEmail,removeByEmail,getByRole
+  get,add,getById,getByEmail,updateById,removeById,updateByEmail,removeByEmail,getByRole
 } = require('../services/users.service');
 
 
@@ -36,7 +36,7 @@ const getUserById = async (req, res) => {
 
 const updateUserById = async (req, res) => {
   try {
-    const updatedUser = await update(req.params.id, req.body);
+    const updatedUser = await updateById(req.params.id, req.body);
     if (!updatedUser || validateUserState(updatedUser)) {
       return res.status(404).json({ message: 'User not found or inactive' });
     }
@@ -49,7 +49,7 @@ const updateUserById = async (req, res) => {
 
 const deleteUserById = async (req, res) => {
   try {
-    const deletedUser = await remove(req.params.id);
+    const deletedUser = await removeById(req.params.id);
     if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
