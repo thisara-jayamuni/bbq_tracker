@@ -44,29 +44,61 @@ const getMyTasks = async (req, res) => {
 const assignToCleaner = async (req, res) => {
   try {
     const { jobId, cleanerId } = req.body;
+    const supervisorId = req.user._id; 
 
     const job = await Job.findById(jobId);
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
     }
 
-    job.assignedTo = cleanerId;
+    job.workedBy = cleanerId;
     job.status = 'Assigned';
 
     job.jobHistory.push({
-      action: 'Assigned to cleaner',
-      performedBy: req.user._id, 
+      action: 'Assigned',
+      performedBy: supervisorId
     });
 
     await job.save();
 
-    res.status(200).json({ message: 'Job assigned to cleaner', job });
+    res.status(200).json({ message: 'Cleaner assigned to job', job });
   } catch (error) {
     console.error('Error assigning job:', error.message);
     res.status(500).json({ message: error.message });
   }
 };
 
+
+const getsupervisorjob = async (req, res) => {
+  try {
+    const supervisorId = req.params.id;
+
+    const jobs = await Job.find({ assignedTo: supervisorId })
+      .populate('bbqId')
+      .populate('assignedTo');
+
+    res.status(200).json({ supervisorJobs: jobs });
+  } catch (error) {
+    console.error('Error fetching supervisor jobs:', error.message);
+    res.status(500).json({ message: 'Failed to fetch supervisor jobs' });
+  }
+};
+
+const getcleanserjob = async (req, res) => {
+  try {
+    const cleanerId = req.params.id;
+
+    const jobs = await Job.find({ workedBy: cleanerId })
+      .populate('bbqId')
+      .populate('assignedTo')
+      .populate('workedBy');
+
+    res.status(200).json({ cleanerJobs: jobs });
+  } catch (error) {
+    console.error('Error fetching cleaner jobs:', error.message);
+    res.status(500).json({ message: 'Failed to fetch cleaner jobs' });
+  }
+};
 
 const updateJobStatus = async (req, res) => {
   try {
@@ -116,5 +148,7 @@ module.exports = {
   getJobs,
   getMyTasks,
   updateJobStatus,
-  assignToCleaner
+  assignToCleaner,
+  getsupervisorjob,
+  getcleanserjob
 };
