@@ -50,11 +50,11 @@ const updateById = async (id, projectData) => {
   }
 };
 
-const removeById = async (id) => {
+const removeById = async (id, status) => {
   try {
     return await User.findByIdAndUpdate(
       id,
-      { status: false }
+      { 'status': !status },
     );
   } catch (error) {
     console.error('removeById Service Error:', error.message);
