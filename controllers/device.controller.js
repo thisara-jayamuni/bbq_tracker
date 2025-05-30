@@ -1,53 +1,36 @@
-const Device = require('../models/Device');
+const deviceService = require('../services/device.service');
 
 const registerDevice = async (req, res) => {
   try {
-    const { deviceId, sim, bbqId } = req.body;
-
-    // Check for existing device
-    const existing = await Device.findOne({ deviceId });
-    if (existing) return res.status(409).json({ message: 'Device already registered' });
-
-    const device = new Device({ deviceId, sim, bbqId });
-    await device.save();
-
+    const device = await deviceService.registerDevice(req.body);
     res.status(201).json(device);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    const status = err.message === 'Device already registered' ? 409 : 500;
+    res.status(status).json({ message: err.message });
   }
 };
 
 const updateDevice = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedData = req.body;
-
-    const updatedDevice = await Device.findByIdAndUpdate(id, updatedData, {
-      new: true,
-      runValidators: true,
-    });
-
-    if (!updatedDevice) {
-      return res.status(404).json({ message: 'Device not found' });
-    }
-
-    res.status(200).json(updatedDevice);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+    const updated = await deviceService.updateDevice(req.params.id, req.body);
+    res.status(200).json(updated);
+  } catch (err) {
+    const status = err.message === 'Device not found' ? 404 : 400;
+    res.status(status).json({ message: err.message });
   }
 };
 
 const getAllDevices = async (req, res) => {
   try {
-    const devices = await Device.find().populate('bbqId');
+    const devices = await deviceService.getAllDevices();
     res.status(200).json(devices);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
 module.exports = {
   registerDevice,
   updateDevice,
-  getAllDevices
+  getAllDevices,
 };
