@@ -1,9 +1,8 @@
-const Reading = require('../models/Reading');
+const readingService = require('../services/reading.service');
 
 const addReading = async (req, res) => {
   try {
-    const reading = new Reading(req.body);
-    await reading.save();
+    const reading = await readingService.addReading(req.body);
     console.log("Reading added:", reading);
     res.status(200).json("ok");
   } catch (err) {
