@@ -2,122 +2,189 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cleaner Dashboard - VIC BBQ Tracker</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="/css/variables.css" rel="stylesheet">
-    <link href="/css/components.css" rel="stylesheet">
-    <link href="/style.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cleaner Dashboard - VIC BBQ Tracker</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="/css/variables.css" rel="stylesheet" />
+  <link href="/css/components.css" rel="stylesheet" />
+  <link href="/style.css" rel="stylesheet" />
 </head>
 
 <body>
-    <!-- Header will be loaded here -->
-    <div id="header-placeholder"></div>
+  <div id="header-placeholder"></div>
 
-    <main class="main-content">
-        <div class="container">
-            <div class="row">
-                <div class="col s12">
-                    <h4>Cleaner Dashboard</h4>
-                </div>
-            </div>
-
-            <!-- My Tasks Section -->
-            <div class="row">
-                <div class="col s12">
-                    <div class="card">
-                        <div class="card-content">
-                            <span class="card-title">My Tasks</span>
-                            <table class="striped">
-                                <thead>
-                                    <tr>
-                                        <th>Task ID</th>
-                                        <th>Location</th>
-                                        <th>Time</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>#1234</td>
-                                        <td>Albert Park</td>
-                                        <td>09:00 AM</td>
-                                        <td>In Progress</td>
-                                        <td><a href="#!" class="btn-small">Complete</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>#1235</td>
-                                        <td>Fitzroy Gardens</td>
-                                        <td>11:00 AM</td>
-                                        <td>Pending</td>
-                                        <td><a href="#!" class="btn-small">Start</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <main class="main-content">
+    <div class="container">
+      <div class="row">
+        <div class="col s12">
+          <h4>Cleaner Dashboard</h4>
         </div>
+      </div>
+
+      <div class="row">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <div class="card-title-container">
+                <span class="card-title">My Tasks</span>
+              </div>
+              <div id="tableLoader" class="center-align" style="padding: 20px;">
+                <div class="preloader-wrapper active">
+                  <div class="spinner-layer spinner-blue-only">
+                    <div class="circle-clipper left"><div class="circle"></div></div>
+                    <div class="gap-patch"><div class="circle"></div></div>
+                    <div class="circle-clipper right"><div class="circle"></div></div>
+                  </div>
+                </div>
+                <p style="margin-top: 10px; color: #666;">Loading tasks...</p>
+              </div>
+              <table class="striped" style="display: none;">
+                <thead>
+                  <tr>
+                    <th>Task ID</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
         </div>
-    </main>
+      </div>
+    </div>
+  </main>
 
-    <!-- Footer will be loaded here -->
-    <div id="footer-placeholder"></div>
+  <div id="footer-placeholder"></div>
 
-    <!-- Load Materialize CSS and JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="module" src="/js/app.js"></script>
 
-    <!-- Load configuration first -->
-    <script src="/js/config.js"></script>
-    <!-- Load Axios -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- Load app.js -->
-    <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    import axiosInstance from '/js/axios-config.js';
 
-    <script>
-        // Function to initialize the page
-        async function initializePage() {
-            try {
-                // Load header
-                const headerResponse = await fetch('/components/header.html');
-                const headerData = await headerResponse.text();
-                document.getElementById('header-placeholder').innerHTML = headerData;
+    async function initializePage() {
+      try {
+        const headerRes = await fetch('/components/header.html');
+        document.getElementById('header-placeholder').innerHTML = await headerRes.text();
+        M.Sidenav.init(document.querySelectorAll('.sidenav'));
 
-                // Initialize sidenav
-                const elems = document.querySelectorAll('.sidenav');
-                M.Sidenav.init(elems);
+        const footerRes = await fetch('/components/footer.html');
+        document.getElementById('footer-placeholder').innerHTML = await footerRes.text();
 
-                // Load footer
-                const footerResponse = await fetch('/components/footer.html');
-                const footerData = await footerResponse.text();
-                document.getElementById('footer-placeholder').innerHTML = footerData;
+        M.Modal.init(document.querySelectorAll('.modal'));
+        M.FormSelect.init(document.querySelectorAll('select'));
 
-                // Initialize modals and selects
-                const modals = document.querySelectorAll('.modal');
-                M.Modal.init(modals);
-                const selects = document.querySelectorAll('select');
-                M.FormSelect.init(selects);
-
-                // Check authentication
-                checkAuth();
-
-                // Verify cleaner access
-                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-                if (!userData || userData.role !== 'cleaner') {
-                    window.location.href = '/';
-                }
-            } catch (error) {
-                console.error('Error initializing page:', error);
-            }
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        if (!userData || userData.role !== 'cleaner') {
+          window.location.href = '/';
+          return;
         }
 
-        // Initialize when DOM is ready
-        document.addEventListener('DOMContentLoaded', initializePage);
-    </script>
+        await loadTasks(userData.id);
+      } catch (error) {
+        console.error('Initialization error:', error);
+      }
+    }
+
+    async function loadTasks(cleanerId) {
+      const loader = document.getElementById('tableLoader');
+      const table = document.querySelector('table');
+      const tbody = table.querySelector('tbody');
+      tbody.innerHTML = '';
+
+      try {
+        const response = await axiosInstance.get(`/jobs/cleanerJob/${cleanerId}`);
+        const tasks = response.data.cleanerJobs || [];
+
+        if (tasks.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="5" class="center-align" style="padding: 20px;">
+                <p style="color: #666;">No tasks found</p>
+              </td>
+            </tr>
+          `;
+        } else {
+          tasks.forEach(task => {
+            const actionButton = getActionButton(task);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${task._id}</td>
+              <td>${task.bbqId?.name || '<span class="grey-text">Unknown</span>'}</td>
+              <td>${task.description || '-'}</td>
+              <td>${task.status}</td>
+              <td>${actionButton}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        loader.style.display = 'none';
+        table.style.display = 'table';
+      } catch (error) {
+        console.error('Error loading cleaner tasks:', error);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="center-align red-text" style="padding: 20px;">
+              Failed to load tasks
+            </td>
+          </tr>
+        `;
+        loader.style.display = 'none';
+        table.style.display = 'table';
+      }
+    }
+
+    function getActionButton(task) {
+      if (task.status === 'Pending') {
+        return `<a href="#!" class="btn-small orange" onclick="updateTaskStatus('${task._id}', 'In Progress')">Start</a>`;
+      } else if (task.status === 'In Progress') {
+        return `<a href="#!" class="btn-small green" onclick="updateTaskStatus('${task._id}', 'Completed')">Complete</a>`;
+      } else {
+        return `<a href="#!" class="btn-small disabled">Done</a>`;
+      }
+    }
+
+    window.updateTaskStatus = async function (taskId, newStatus) {
+      try {
+        await axiosInstance.put(`/jobs/${taskId}`, { status: newStatus });
+        M.toast({ html: `Marked as ${newStatus}`, classes: 'green' });
+
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        await loadTasks(userData.id);
+      } catch (error) {
+        console.error(`Failed to update task ${taskId}:`, error);
+        M.toast({ html: 'Update failed', classes: 'red' });
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', initializePage);
+  </script>
+
+  <style>
+    .card-title-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .btn-small {
+      margin: 0 4px;
+    }
+
+    .modal {
+      max-width: 500px;
+    }
+  </style>
 </body>
 
 </html>
