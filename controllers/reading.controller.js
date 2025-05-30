@@ -10,6 +10,16 @@ const addReading = async (req, res) => {
   }
 };
 
+const getReading = async (req, res) => {
+  try {
+    const readings = await readingService.getRecentReadings(); 
+    res.json(readings);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
-  addReading
+  addReading,
+  getReading
 };

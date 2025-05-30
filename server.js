@@ -34,11 +34,13 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+  .then(() => {
+  console.log("MongoDB connected");
+  require("./services/mqttSubscriber"); 
+}).catch((err) => console.error('MongoDB connection error:', err));
 
 app.get('/', (req, res) => {
-  res.send('🔥 BBQ Tracker API is running');
+  res.send('BBQ Tracker API is running');
 });
 
 // Start server

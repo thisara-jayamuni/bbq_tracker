@@ -28,6 +28,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.14.1",
+    "mqtt": "^5.13.0",
     "router": "^2.2.0"
   }
 }
