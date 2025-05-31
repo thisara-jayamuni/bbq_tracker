@@ -35,9 +35,15 @@
               <div id="tableLoader" class="center-align" style="padding: 20px;">
                 <div class="preloader-wrapper active">
                   <div class="spinner-layer spinner-blue-only">
-                    <div class="circle-clipper left"><div class="circle"></div></div>
-                    <div class="gap-patch"><div class="circle"></div></div>
-                    <div class="circle-clipper right"><div class="circle"></div></div>
+                    <div class="circle-clipper left">
+                      <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                      <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                      <div class="circle"></div>
+                    </div>
                   </div>
                 </div>
                 <p style="margin-top: 10px; color: #666;">Loading tasks...</p>
@@ -165,20 +171,21 @@
               ? task.workedBy.userName
               : task.assignedTo?.role === 'cleaner'
                 ? task.assignedTo.userName
-                : '<span class="grey-text">Unassigned</span>';
+                : '-';
 
+            const statusClass = task.status.toLowerCase().replace(' ', '-');
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <td>${task._id}</td>
               <td>${task.bbqId?.name || '<span class="grey-text">Unknown</span>'}</td>
               <td>${cleaner}</td>
-              <td>${task.status}</td>
+              <td><span class="status-badge ${statusClass}">${task.status}</span></td>
               <td>
-                ${cleaner.includes('Unassigned')
-                  ? `<a href="#!" class="btn-small green" onclick="openAssignModal('${task._id}')">
+                ${cleaner === '-'
+                ? `<a href="#!" class="btn-small green" onclick="openAssignModal('${task._id}')">
                        <i class="material-icons">person_add</i>
                      </a>`
-                  : `<a href="#!" class="btn-small disabled">Assigned</a>`}
+                : `<a href="#!" class="btn-small disabled">Assigned</a>`}
               </td>
             `;
             tbody.appendChild(tr);
@@ -248,6 +255,35 @@
 
     .modal {
       max-width: 500px;
+    }
+
+    /* Status Badge Styling */
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8em;
+      color: white;
+      text-transform: uppercase;
+    }
+
+    .status-badge.pending {
+      background-color: #FFC107;
+    }
+
+    .status-badge.in-progress {
+      background-color: #2196F3;
+    }
+
+    .status-badge.completed {
+      background-color: #4CAF50;
+    }
+
+    .status-badge.cancelled {
+      background-color: #F44336;
+    }
+
+    .status-badge.assigned {
+      background-color: #9E9E9E;
     }
   </style>
 </body>

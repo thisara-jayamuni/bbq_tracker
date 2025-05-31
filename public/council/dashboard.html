@@ -439,7 +439,8 @@
         // Function to load BBQ data
         async function loadBBQData() {
             try {
-                const bbqs = await bbqService.getAllBBQs();
+                const response = await bbqService.getAllBBQs();
+                const bbqs = response.bbqs || [];
                 const tbody = document.querySelector('#bbq-table tbody');
                 tbody.innerHTML = '';
 
