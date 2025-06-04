@@ -210,3 +210,33 @@ export const userService = {
     return response.data;
   },
 };
+
+// Job service
+export const jobService = {
+  // Get supervisor tasks
+  getSupervisorTasks: async (supervisorId) => {
+    try {
+      const response = await axiosInstance.get(
+        `/jobs/supervisorJob/${supervisorId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching supervisor tasks:', error);
+      throw error;
+    }
+  },
+
+  // Assign cleaner to job
+  assignCleaner: async (jobId, cleanerId) => {
+    try {
+      const response = await axiosInstance.put('/jobs/assign', {
+        jobId,
+        cleanerId,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error assigning cleaner:', error);
+      throw error;
+    }
+  },
+};

@@ -54,6 +54,8 @@
                     <th>ID</th>
                     <th>BBQ Location</th>
                     <th>Cleaner</th>
+                    <th>Description</th>
+                    <th>Created At</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -85,7 +87,8 @@
     </div>
     <div class="modal-footer">
       <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancel</a>
-      <a href="#!" class="waves-effect waves-green btn" onclick="assignCleaner()">Assign</a>
+      <a href="#" class="waves-effect waves-green btn"
+        onclick="assignCleaner(document.getElementById('assignJobId').value)">Assign</a>
     </div>
   </div>
 
@@ -100,6 +103,7 @@
 
   <script type="module">
     import axiosInstance from '/js/axios-config.js';
+    import { jobService } from '/js/services/api.js';
 
     let allCleaners = [];
 
@@ -154,13 +158,13 @@
       tbody.innerHTML = '';
 
       try {
-        const response = await axiosInstance.get(`/jobs/supervisorJob/${supervisorId}`);
-        const tasks = response.data.supervisorJobs || [];
+        const response = await jobService.getSupervisorTasks(supervisorId);
+        const tasks = response.supervisorJobs || [];
 
         if (tasks.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="5" class="center-align" style="padding: 20px;">
+              <td colspan="7" class="center-align" style="padding: 20px;">
                 <p style="color: #666;">No tasks found</p>
               </td>
             </tr>
@@ -174,18 +178,26 @@
                 : '-';
 
             const statusClass = task.status.toLowerCase().replace(' ', '-');
+            const createdAt = new Date(task.createdAt).toLocaleString('en-AU', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            });
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <td>${task._id}</td>
               <td>${task.bbqId?.name || '<span class="grey-text">Unknown</span>'}</td>
               <td>${cleaner}</td>
+              <td>${task.description || '<span class="grey-text">No description</span>'}</td>
+              <td>${createdAt}</td>
               <td><span class="status-badge ${statusClass}">${task.status}</span></td>
               <td>
-                ${cleaner === '-'
-                ? `<a href="#!" class="btn-small green" onclick="openAssignModal('${task._id}')">
-                       <i class="material-icons">person_add</i>
-                     </a>`
-                : `<a href="#!" class="btn-small disabled">Assigned</a>`}
+                ${(cleaner === '-' && task.status.toLowerCase() !== 'assigned')
+                ? `<a href="#!\" class="btn-small green\" onclick="openAssignModal('${task._id}')\"><i class="material-icons">person_add</i></a>`
+                : ''}
               </td>
             `;
             tbody.appendChild(tr);
@@ -198,7 +210,7 @@
         console.error('Error loading tasks:', error);
         tbody.innerHTML = `
           <tr>
-            <td colspan="5" class="center-align red-text" style="padding: 20px;">
+            <td colspan="7" class="center-align red-text" style="padding: 20px;">
               Failed to load tasks
             </td>
           </tr>
@@ -210,12 +222,15 @@
 
     window.openAssignModal = function (jobId) {
       document.getElementById('assignJobId').value = jobId;
+      // Reset cleaner selection when opening modal
+      const cleanerSelect = document.getElementById('cleanerSelect');
+      cleanerSelect.value = '';
+      M.FormSelect.init(cleanerSelect);
       const modal = M.Modal.getInstance(document.getElementById('assignCleanerModal'));
       modal.open();
     };
 
-    window.assignCleaner = async function () {
-      const jobId = document.getElementById('assignJobId').value;
+    window.assignCleaner = async function (jobId) {
       const cleanerId = document.getElementById('cleanerSelect').value;
 
       if (!jobId || !cleanerId) {
@@ -224,11 +239,16 @@
       }
 
       try {
-        await axiosInstance.put('/jobs/assign', { jobId, cleanerId });
+        await jobService.assignCleaner(jobId, cleanerId);
         M.toast({ html: 'Cleaner assigned successfully', classes: 'green' });
 
         const modal = M.Modal.getInstance(document.getElementById('assignCleanerModal'));
         modal.close();
+
+        // Reset cleaner selection
+        const cleanerSelect = document.getElementById('cleanerSelect');
+        cleanerSelect.value = '';
+        M.FormSelect.init(cleanerSelect);
 
         const userData = JSON.parse(localStorage.getItem('userData') || '{}');
         await loadTasks(userData.id);
