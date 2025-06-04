@@ -15,6 +15,17 @@ export const bbqService = {
     }
   },
 
+  // Get single BBQ by ID
+  getBBQById: async (bbqId) => {
+    try {
+      const response = await axiosInstance.get(`/bbqs/${bbqId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching BBQ location:', error);
+      throw error;
+    }
+  },
+
   // Create new BBQ location
   createBBQ: async (bbqData) => {
     try {

@@ -162,6 +162,42 @@
         .status-badge.closed {
             background-color: #9E9E9E;
         }
+
+        /* Action Buttons Styling */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .action-buttons .btn-small {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .action-buttons .btn-small i {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .action-buttons .btn-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-buttons .btn-small.teal:hover {
+            background-color: #00897b !important;
+        }
+
+        .action-buttons .btn-small.red:hover {
+            background-color: #d32f2f !important;
+        }
     </style>
 </head>
 
@@ -210,6 +246,16 @@
                                     class="btn-floating btn-small waves-effect waves-light modal-trigger">
                                     <i class="material-icons">add</i>
                                 </a>
+                            </div>
+                        </div>
+                        <!-- Add Search Bar -->
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col s12">
+                                <div class="input-field">
+                                    <i class="material-icons prefix">search</i>
+                                    <input type="text" id="bbqSearch" placeholder="Search by name, ID, or status...">
+                                    <label for="bbqSearch">Search BBQ Locations</label>
+                                </div>
                             </div>
                         </div>
                         <div id="tableLoader" class="center-align" style="padding: 20px;">
@@ -470,14 +516,16 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="#editBBQModal" class="btn-small waves-effect waves-light teal modal-trigger" 
-                                   onclick="openUpdateBBQModal('${bbq.id}')">
-                                    <i class="material-icons left">edit</i>Update
-                                </a>
-                                <a href="#!" class="btn-small waves-effect waves-light red" 
-                                   onclick="deleteBBQLocation('${bbq.id}', '${bbq.name}')">
-                                    <i class="material-icons left">delete</i>Delete
-                                </a>
+                                <div class="action-buttons">
+                                    <a href="#editBBQModal" class="btn-small waves-effect waves-light teal modal-trigger" 
+                                       onclick="openUpdateBBQModal('${bbq.id}')">
+                                        <i class="material-icons">edit</i>
+                                    </a>
+                                    <a href="#!" class="btn-small waves-effect waves-light red" 
+                                       onclick="deleteBBQLocation('${bbq.id}', '${bbq.name}')">
+                                        <i class="material-icons">delete</i>
+                                    </a>
+                                </div>
                             </td>
                         `;
                         tbody.appendChild(row);
@@ -505,6 +553,32 @@
                 M.toast({ html: 'Error loading BBQ data', classes: 'red' });
             }
         }
+
+        // Function to filter BBQ locations
+        function filterBBQLocations(searchTerm) {
+            const tbody = document.querySelector('#bbq-table tbody');
+            const rows = tbody.getElementsByTagName('tr');
+            searchTerm = searchTerm.toLowerCase();
+
+            for (let row of rows) {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+
+        // Add search event listener
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('bbqSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', function (e) {
+                    filterBBQLocations(e.target.value);
+                });
+            }
+        });
 
         // Function to initialize the page
         async function initializePage() {
@@ -705,8 +779,8 @@
         // Function to open update BBQ modal
         window.openUpdateBBQModal = async function (bbqId) {
             try {
-                const bbqs = await bbqService.getAllBBQs();
-                const bbq = bbqs.find(b => b.id === bbqId);
+                const response = await bbqService.getBBQById(bbqId);
+                const bbq = response;
 
                 if (!bbq) {
                     M.toast({ html: 'BBQ location not found', classes: 'red' });
@@ -732,7 +806,10 @@
                 modal.open();
             } catch (error) {
                 console.error('Error opening update modal:', error);
-                M.toast({ html: 'Error loading BBQ data', classes: 'red' });
+                M.toast({
+                    html: error.response?.data?.message || 'Error loading BBQ data',
+                    classes: 'red'
+                });
             }
         }
 
