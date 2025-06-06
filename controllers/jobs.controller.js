@@ -66,7 +66,7 @@ const updateJobStatus = async (req, res) => {
       jobId,
       status,
       remarks,
-      userId: req.user._id,
+      userId: req.user.userId,
       userRole: req.user.role
     });
 
