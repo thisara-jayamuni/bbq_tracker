@@ -226,6 +226,28 @@ export const jobService = {
     }
   },
 
+  // Get cleaner tasks
+  getCleanerTasks: async (cleanerId) => {
+    try {
+      const response = await axiosInstance.get(`/jobs/cleanerJob/${cleanerId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching cleaner tasks:', error);
+      throw error;
+    }
+  },
+
+  // Update task status
+  updateTaskStatus: async (taskId, status) => {
+    try {
+      const response = await axiosInstance.put(`/jobs/${taskId}`, { status });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating task status:', error);
+      throw error;
+    }
+  },
+
   // Assign cleaner to job
   assignCleaner: async (jobId, cleanerId) => {
     try {
