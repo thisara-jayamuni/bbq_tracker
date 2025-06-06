@@ -50,11 +50,11 @@ const updateJobStatus = async ({ jobId, status, remarks, userId, userRole }) => 
   const job = await Job.findById(jobId);
   if (!job) throw new Error('Job not found');
 
-  if (userRole === 'cleaner' && job.assignedTo.toString() !== userId.toString()) {
-    const err = new Error('You are not allowed to update this task');
-    err.status = 403;
-    throw err;
-  }
+  // if (userRole === 'cleaner' && job.assignedTo.toString() !== userId.toString()) {
+  //   const err = new Error('You are not allowed to update this task');
+  //   err.status = 403;
+  //   throw err;
+  // }
 
   if (status === 'In Progress') {
     job.status = 'In Progress';
