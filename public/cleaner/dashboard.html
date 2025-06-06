@@ -33,9 +33,15 @@
               <div id="tableLoader" class="center-align" style="padding: 20px;">
                 <div class="preloader-wrapper active">
                   <div class="spinner-layer spinner-blue-only">
-                    <div class="circle-clipper left"><div class="circle"></div></div>
-                    <div class="gap-patch"><div class="circle"></div></div>
-                    <div class="circle-clipper right"><div class="circle"></div></div>
+                    <div class="circle-clipper left">
+                      <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                      <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                      <div class="circle"></div>
+                    </div>
                   </div>
                 </div>
                 <p style="margin-top: 10px; color: #666;">Loading tasks...</p>
@@ -69,6 +75,7 @@
 
   <script type="module">
     import axiosInstance from '/js/axios-config.js';
+    import { jobService } from '/js/services/api.js';
 
     async function initializePage() {
       try {
@@ -101,8 +108,8 @@
       tbody.innerHTML = '';
 
       try {
-        const response = await axiosInstance.get(`/jobs/cleanerJob/${cleanerId}`);
-        const tasks = response.data.cleanerJobs || [];
+        const response = await jobService.getCleanerTasks(cleanerId);
+        const tasks = response.cleanerJobs || [];
 
         if (tasks.length === 0) {
           tbody.innerHTML = `
@@ -155,7 +162,7 @@
 
     window.updateTaskStatus = async function (taskId, newStatus) {
       try {
-        await axiosInstance.put(`/jobs/${taskId}`, { status: newStatus });
+        await jobService.updateTaskStatus(taskId, newStatus);
         M.toast({ html: `Marked as ${newStatus}`, classes: 'green' });
 
         const userData = JSON.parse(localStorage.getItem('userData') || '{}');
