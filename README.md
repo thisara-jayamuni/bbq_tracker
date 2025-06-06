@@ -1,18 +1,22 @@
 # 🔥 BBQ Tracker
 
-A comprehensive BBQ tracking and management system built with Node.js, Express, and MongoDB.
+A comprehensive BBQ tracking and management system built with HTML, CSS, JavaScript, Materialize CSS, Node.js, Express, and MongoDB.
 
 ## 🚀 Features
 
-- User authentication and authorization
-- BBQ device management
-- Fault reporting system
+- Show nearby BBQ location with real-time updates
+- Interactive fault reporting system
+- User Management and Authentication
+- BBQ device management and issues tracking
 - Job scheduling and tracking
-- Device readings monitoring
+- Responsive and modern UI with Materialize CSS
 - RESTful API architecture
+- Device readings monitoring and analytics
+- Data visualization and reporting
 
 ## 🛠️ Tech Stack
 
+- **Frontend**: HTML, CSS, JavaScript, Materialize CSS
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **Authentication**: JWT (JSON Web Tokens)

@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middlewares/auth.js');
-const authorizeRoles = require('../middlewares/role.middleware');
-const readingsController = require('../controllers/reading.controller.js');
+const readingController = require('../controllers/reading.controller');
 
-router.post('/', auth, authorizeRoles('InternalService'),readingsController.addReading);
+router.get('/', readingController.getReading);
+router.post('/', readingController.addReading);
 
-module.exports = router
+module.exports = router;
