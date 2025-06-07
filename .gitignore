@@ -10,9 +10,9 @@ logs/
 *.log.*
 
 # Environment variables
-.env
-.env.dev
-.env.*
+.env 
+# .env.dev // For Demo Purposes
+# .env.* // For Demo Purposes
 
 # Build output
 dist/

@@ -74,7 +74,8 @@ window.initMap = function () {
 // Function to load BBQ locations from API
 async function loadBBQLocations(userLocation = null) {
   try {
-    const bbqLocations = await bbqService.getAllBBQs();
+    const response = await bbqService.getAllBBQs();
+    const bbqLocations = response.bbqs || [];
 
     // Clear existing markers
     bbqMarkers.forEach((marker) => marker.setMap(null));

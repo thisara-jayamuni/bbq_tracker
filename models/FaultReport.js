@@ -5,7 +5,11 @@ const faultReportSchema = new mongoose.Schema({
   bbqName: { type: String },
   reporterName: { type: String, required: true },
   issue: { type: String, required: true },
-  status: { type: String, default: "Pending" },
+  status: {
+    type: String,
+    enum: ['Pending','In Progress','Assigned','Resolved'],
+    default: 'Pending'
+  },
   reportedAt: { type: Date, default: Date.now },
 });
 
