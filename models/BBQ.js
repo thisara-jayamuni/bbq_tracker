@@ -32,6 +32,10 @@ const BBQSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  lastUpdate: {
+    type: Date,
+    default: Date.now,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
