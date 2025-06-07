@@ -62,10 +62,30 @@ const deleteBBQ = async (id) => {
   return await BBQ.findByIdAndDelete(id);
 };
 
+const insertBulkBBQs = async (bbqList) => {
+  const formattedBBQs = bbqList.map(bbq => ({
+    name: bbq.name,
+    location: {
+      type: "Point",
+      coordinates: bbq.location.coordinates,
+    },
+    cleanliness: bbq.cleanliness || "Clean",
+    status: bbq.status || "Working",
+    lastCleaned: bbq.lastCleaned ? new Date(bbq.lastCleaned) : new Date(),
+    lastUpdate: bbq.lastUpdate ? new Date(bbq.lastUpdate) : new Date(),
+    createdAt: bbq.createdAt ? new Date(bbq.createdAt) : new Date(),
+  }));
+
+  const result = await BBQ.insertMany(formattedBBQs, { ordered: false });
+  return result.length;
+};
+
+
 module.exports = {
   createBBQ,
   getAllBBQs,
   getBBQById,
   updateBBQ,
-  deleteBBQ
+  deleteBBQ,
+  insertBulkBBQs
 };
