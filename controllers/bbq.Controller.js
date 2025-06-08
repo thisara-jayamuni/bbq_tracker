@@ -3,7 +3,8 @@ const {
   createBBQ,
   getBBQById,
   updateBBQ,
-  deleteBBQ
+  deleteBBQ,
+  insertBulkBBQs
 } = require('../services/bbq.service');
 
 const getBBQs = async (req, res) => {
@@ -55,10 +56,29 @@ const deleteById = async (req, res) => {
   }
 };
 
+const bulkInsertBBQs = async (req, res) => {
+  try {
+    const bbqList = req.body;
+
+    if (!Array.isArray(bbqList) || bbqList.length === 0) {
+      return res.status(400).json({ message: "Invalid or empty BBQ data" });
+    }
+
+    const insertedCount = await insertBulkBBQs(bbqList);
+
+    return res.status(200).json({ message: `${insertedCount} BBQs inserted successfully.` });
+  } catch (error) {
+    console.error("Controller error:", error.message);
+    return res.status(500).json({ message: "Error inserting BBQs", error: error.message });
+  }
+};
+
+
 module.exports = {
   getBBQs,
   createNew,
   getById,
   updateById,
-  deleteById
+  deleteById,
+  bulkInsertBBQs
 };

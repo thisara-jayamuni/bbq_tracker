@@ -9,5 +9,6 @@ router.post("/", auth, authorizeRoles('user','InternalService'),bbqController.cr
 router.get("/:id", bbqController.getById);      
 router.put("/:id", auth, bbqController.updateById);      
 router.delete("/:id", auth, bbqController.deleteById);   
+router.post("/bulk", bbqController.bulkInsertBBQs);
 
 module.exports = router;
