@@ -49,6 +49,7 @@ const getBBQById = async (id) => {
     name: bbq.name,
     cleanliness: bbq.cleanliness,
     lastCleaned: bbq.lastCleaned,
+    lastUpdate: bbq.lastUpdate,
     status: bbq.status,
   };
 };
