@@ -15,6 +15,17 @@ export const bbqService = {
     }
   },
 
+  // Get single BBQ by ID
+  getBBQById: async (bbqId) => {
+    try {
+      const response = await axiosInstance.get(`/bbqs/${bbqId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching BBQ location:', error);
+      throw error;
+    }
+  },
+
   // Create new BBQ location
   createBBQ: async (bbqData) => {
     try {
@@ -197,5 +208,57 @@ export const userService = {
       status,
     });
     return response.data;
+  },
+};
+
+// Job service
+export const jobService = {
+  // Get supervisor tasks
+  getSupervisorTasks: async (supervisorId) => {
+    try {
+      const response = await axiosInstance.get(
+        `/jobs/supervisorJob/${supervisorId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching supervisor tasks:', error);
+      throw error;
+    }
+  },
+
+  // Get cleaner tasks
+  getCleanerTasks: async (cleanerId) => {
+    try {
+      const response = await axiosInstance.get(`/jobs/cleanerJob/${cleanerId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching cleaner tasks:', error);
+      throw error;
+    }
+  },
+
+  // Update task status
+  updateTaskStatus: async (taskId, status) => {
+    try {
+      const response = await axiosInstance.put(`/jobs/${taskId}`, { status });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating task status:', error);
+      throw error;
+    }
+  },
+
+  // Assign cleaner to job
+  assignCleaner: async (jobId, cleanerId) => {
+    try {
+      const response = await axiosInstance.put('/jobs/assign', {
+        jobId,
+        cleanerId,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error assigning cleaner:', error);
+      throw error;
+    }
   },
 };

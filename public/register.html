@@ -80,8 +80,9 @@
     <!-- Load Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module">
-        // Import axios instance
-        import axiosInstance from '/js/axios-config.js';
+        // Import services and utilities
+        import { userService } from '/js/services/api.js';
+        import { showToast } from '/js/utils/helpers.js';
 
         // Load header and footer
         fetch('components/header.html')
@@ -128,27 +129,31 @@
             e.preventDefault();
 
             if (password.value !== confirmPassword.value) {
-                M.toast({ html: 'Passwords do not match', classes: 'red' });
+                showToast('Passwords do not match', 'red');
                 return;
             }
 
             try {
-                const response = await axiosInstance.post('/users', {
+                const userData = {
                     userName: document.getElementById('userName').value,
                     email: document.getElementById('email').value,
                     password: password.value,
-                });
+                    role: 'user', // Default role for new registrations
+                    status: true  // Default to active
+                };
 
-                M.toast({ html: 'Registration successful! Please login.', classes: 'green' });
+                await userService.createUser(userData);
+                showToast('Registration successful! Please login.', 'green');
+
                 setTimeout(() => {
                     window.location.href = '/login.html';
                 }, 2000);
             } catch (error) {
                 console.error('Registration error:', error);
-                M.toast({
-                    html: error.response?.data?.message || 'Registration failed. Please try again.',
-                    classes: 'red'
-                });
+                showToast(
+                    error.response?.data?.message || 'Registration failed. Please try again.',
+                    'red'
+                );
             }
         });
     </script>

@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const bbqController = require("../controllers/bbq.Controller");
+const authorizeRoles = require('../middlewares/role.middleware');
 const auth = require("../middlewares/auth");
 
-router.get("/", bbqController.getAllBBQs);              
-router.post("/",auth, bbqController.createBBQ);              
-router.get("/:id", bbqController.getBBQById);           
-router.post("/", auth, bbqController.createBBQ);        
-router.put("/:id", auth, bbqController.updateBBQ);      
-router.delete("/:id", auth, bbqController.deleteBBQ);   
+router.get("/", bbqController.getBBQs);           
+router.post("/", auth, authorizeRoles('user','InternalService'),bbqController.createNew);            
+router.get("/:id", bbqController.getById);      
+router.put("/:id", auth, bbqController.updateById);      
+router.delete("/:id", auth, bbqController.deleteById);   
+router.post("/bulk", bbqController.bulkInsertBBQs);
 
 module.exports = router;
